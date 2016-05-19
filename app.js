@@ -7,7 +7,7 @@ import bodyParser from 'body-parser';
 import helmet from 'helmet';
 
 import routes from './routes';
-import weixin from './routes/weixin';
+import wechat from './routes/wechat';
 
 const app = express();
 
@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname, 'static')));
 // 禁用X-Powered-By, 禁止任何frame, iframe, XSS protections
 app.use(helmet());
 // 微信入口设置
-app.use('/weixin', weixin);
+app.use('/wechat', wechat);
 app.use(routes);
 
 // catch 404 and forward to error handler
