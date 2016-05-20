@@ -57,7 +57,7 @@
       "command": "webpack --verbose --colors --progress --display-error-details --config webpack/build",
       "env": {
         "NODE_ENV": "development",
-        "HOST": "www.education.com",
+        "HOST": "w.seayang.me",
         "PORT": "3000",
         "PUBLIC_PATH": "dist"
       }
@@ -66,7 +66,7 @@
       "command": "webpack --verbose --colors --progress --display-error-details --config webpack/build",
       "env": {
         "NODE_ENV": "production",
-        "HOST": "st.education.com",
+        "HOST": "st.seayang.me",
         "PORT": "80",
         "PUBLIC_PATH": "static/education"
       }

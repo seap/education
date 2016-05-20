@@ -4,9 +4,9 @@ const router = express.Router();
 
 //微信配置
 const config = {
-    token: 'sea.yang.token',
+    token: 'seayangtoken',
     appid: 'wx1d93f16c31b0cf45',
-    encodingAESKey: 'xxxxxxxxxxxxxxxxxxxxxxxx'
+    encodingAESKey: 'QHhz7I8hHAGafbNxx40MLMtE2jOcfBJ6Ctcg1bpDXsM'
 };
 
 function sha1(str){
