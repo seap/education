@@ -12,6 +12,9 @@ import TextField from 'material-ui/TextField';
 
 import styles from './main.scss';
 
+const style = {
+  margin: 12,
+};
 
 class Login extends Component {
   constructor() {
@@ -54,12 +57,12 @@ class Login extends Component {
           label="开始录音"
           primary={true}
           fullWidth={true}
-          onTouchTap={this.onSubmit} />
+          onTouchTap={this.onSubmit} style={style} />
         <RaisedButton
           label="停止录音"
           primary={true}
           fullWidth={true}
-          onTouchTap={this.stopRecord} />
+          onTouchTap={this.stopRecord} style={style} />
 
         </div>
       </MuiThemeProvider>
