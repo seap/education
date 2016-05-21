@@ -1,11 +1,14 @@
 import express from 'express';
 import crypto from 'crypto';
+import fetch from 'isomorphic-fetch';
+
 const router = express.Router();
 
-//微信配置
+// 微信配置
 const config = {
     token: 'seayangtoken',
-    appid: 'wx1d93f16c31b0cf45',
+    appid: 'wxb558fbe29d74764d',
+    appsecret: '2d46bd429636b8e05a64c62aa0d2e8fd',
     encodingAESKey: 'QHhz7I8hHAGafbNxx40MLMtE2jOcfBJ6Ctcg1bpDXsM'
 };
 
@@ -15,6 +18,33 @@ function sha1(str){
   str = md5sum.digest("hex");
   return str;
 }
+
+//创建签名
+function createSignature(url, ticketObj) {
+  const noncestr = createNonceStr();
+  // noncestr=Wm3WZYTPz0wzccnW
+  // jsapi_ticket=sM4AOVdWfPE4DxkXGEs8VMCPGGVi4C3VM0P37wVUCFvkVAy_90u5h9nbSlYy3-Sl-HhTdfl2fzFy1AOcHKP7qg
+  // timestamp=1414587457
+  // url=http://mp.weixin.qq.com?params=value
+  let sha1String = `jsapi_ticket=${ticketObj.ticket}&noncestr=${noncestr}&timestamp=${ticketObj.timestamp}&url=${url}`;
+  return {
+    signature: sha1(sha1String),
+    ticket: ticketObj.ticket,
+    timestamp: ticketObj.timestamp,
+    noncestr: noncestr,
+    url: url
+  }
+}
+
+// 随机字符串产生
+function createNonceStr() {
+	return Math.random().toString(36).substr(2, 15);
+};
+
+// 时间戳产生
+function createTimeStamp() {
+	return parseInt(new Date().getTime() / 1000);
+};
 
 // 微信接入验证
 // http://mp.weixin.qq.com/wiki/8/f9a0b8382e0b77d87b3bcc1ce6fbc104.html
@@ -38,17 +68,86 @@ router.get('/validate', (req, res) => {
   oriArray.sort();
 
   let original = oriArray.join('');
-  console.log("Original str : " + original);
-  console.log("Signature : " + signature );
   let scyptoString = sha1(original);
   if (signature == scyptoString){
     res.end(echostr);
-    console.log("Confirm and send echo back");
   } else {
-    res.end("false");
-    console.log("Failed!");
+    res.end('false');
   }
 });
 
+let cachedToken = null;
+//获取access_token
+router.get('/token', async (req, res) => {
+  let timestamp = createTimeStamp();
+  if (cachedToken) {
+    if (timestamp < cachedToken.timestamp + cachedToken.expires_in - 300) {
+      return res.json(cachedToken);
+    }
+  }
+  try {
+    let response = await fetch(`https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${config.appid}&secret=${config.appsecret}`);
+    let json = await response.json();
+    json.timestamp = timestamp;
+    console.log(json);
+    cachedToken = json;
+    res.json(json);
+  } catch (e) {
+    console.log(e);
+    res.json('false');
+  }
+});
+
+let cachedTicket = null;
+//获取ticket
+router.get('/ticket', async (req, res) => {
+  let timestamp = new Date().getTime() / 1000;
+  if (cachedTicket) {
+    if (timestamp < cachedTicket.timestamp + cachedTicket.expires_in - 300) {
+      return res.json(cachedTicket);
+    }
+  }
+  try {
+    let response = await fetch(`https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${cachedToken.access_token}&type=jsapi`);
+    let json = await response.json();
+    json.timestamp = timestamp;
+    console.log(json);
+    cachedTicket = json;
+    res.json(json);
+  } catch (e) {
+    console.log(e);
+    res.json('false');
+  }
+});
+
+let cachedSignatures = {};
+//获取signature
+router.get('/signature', async (req, res) => {
+  const timestamp = createTimeStamp();
+  //如果ticket失效
+  if (!cachedTicket || timestamp > cachedTicket.timestamp + cachedTicket.expires_in - 300 ) {
+    try {
+      let response = await fetch(`https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${cachedToken.access_token}&type=jsapi`);
+      let json = await response.json();
+      json.timestamp = timestamp;
+      cachedTicket = json;
+    } catch (e) {
+      console.log(e);
+      return res.json('false');
+    }
+  }
+
+  const url = req.query.url || 'http://w.seayang.me/'; // || req.originalUrl;
+  let signatureObj = cachedSignatures[url];
+  if (signatureObj && (signatureObj.ticket == cachedTicket.ticket)) {
+    return res.json(signatureObj);
+  }
+  //重新生成签名
+  signatureObj = createSignature(url, cachedTicket);
+  console.log('url:', url);
+  console.log(signatureObj);
+  cachedSignatures[url] = signatureObj;
+  res.json(signatureObj);
+});
 
 export default router;

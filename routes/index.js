@@ -21,23 +21,14 @@ function fetchComponentData(dispatch, components, params) {
   return Promise.all(promises);
 }
 
-function isV4Format(ip) {
-  const ipv4Regex = /^(\d{1,3}\.){3,3}\d{1,3}$/;
-  return ipv4Regex.test(ip);
-};
-
-function isV6Format(ip) {
-  const ipv6Regex = /^(::)?(((\d{1,3}\.){3}(\d{1,3}){1})?([0-9a-f]){0,4}:{0,2}){1,8}(::)?$/i;
-  return ipv6Regex.test(ip);
-};
 
 router.use((req, res) => {
   if (__DEVELOPMENT__) {
     webpackIsomorphicTools.refresh();
   }
+  // console.log(req.headers['user-agent']);
   const memoryHistory = createMemoryHistory(req.originalUrl);
-  const ip = isV6Format(req.ip) ? req.ip.slice(7) : req.ip;
-  const store = createStore(memoryHistory, {ip: ip});
+  const store = createStore(memoryHistory, undefined);
   const history = syncHistoryWithStore(memoryHistory, store);
   const hydrateOnClient = (status = 200) => {
     const html = ReactDOM.renderToString(

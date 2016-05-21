@@ -4,6 +4,14 @@ if (typeof require.ensure !== 'function') require.ensure = (d, c) => c(require);
 
 function routes(store){
 
+  //注册
+  const register = {
+    path: '/register',
+    getComponent(location, callback) {
+      require.ensure([], require => callback(null, require('./containers/Register').default));
+    }
+  };
+
   //我的作业
   const mytask = {
     path: '/mytask',
@@ -27,7 +35,7 @@ function routes(store){
     getIndexRoute(location, callback) {
       require.ensure([], require => callback(null, {component: require('./containers/Login').default}));
     },
-    childRoutes: [mytask, notFoundPage]
+    childRoutes: [register, mytask, notFoundPage]
   };
 
   return rootRoute;

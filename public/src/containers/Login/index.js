@@ -24,7 +24,13 @@ class Login extends Component {
     }
   }
 
+  componentDidMount() {
+    let { actions } = this.props;
+    actions && actions.wxConfig();
+  }
+
   render() {
+
     return (
       <div className={ styles.uiForm }>
       logo picture
@@ -45,15 +51,31 @@ class Login extends Component {
           fullWidth={true} />
           <br/>
         <RaisedButton
-          label="绑定账号"
+          label="开始录音"
           primary={true}
-          fullWidth={true} />
+          fullWidth={true}
+          onTouchTap={this.onSubmit} />
+        <RaisedButton
+          label="停止录音"
+          primary={true}
+          fullWidth={true}
+          onTouchTap={this.stopRecord} />
 
         </div>
       </MuiThemeProvider>
 
       </div>
     );
+  }
+
+  onSubmit = () => {
+    let { actions } = this.props;
+    actions.record();
+  }
+
+  stopRecord = () => {
+    let { actions } = this.props;
+    actions.stopRecord();
   }
 }
 
