@@ -5,54 +5,117 @@ import * as IndexActions from '../../actions';
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-
+import AppBar from 'material-ui/AppBar';
+import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import {Tabs, Tab} from 'material-ui/Tabs';
-import {List, ListItem} from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
-import Subheader from 'material-ui/Subheader';
-import ActionInfo from 'material-ui/svg-icons/action/info';
 import Divider from 'material-ui/Divider';
-import FileFolder from 'material-ui/svg-icons/file/folder';
-import ActionAssignment from 'material-ui/svg-icons/action/assignment';
-import {blue500, yellow600} from 'material-ui/styles/colors';
-import EditorInsertChart from 'material-ui/svg-icons/editor/insert-chart';
-import ICON_CREATE from 'material-ui/svg-icons/content/create';
-import {green100, green500, green700} from 'material-ui/styles/colors';
 
-const muiTheme = getMuiTheme({
-  palette: {
-    primary1Color: green500,
-    primary2Color: green700,
-    primary3Color: green100,
-  },
-}, {
-  avatar: {
-    borderColor: null,
-  },
-  userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1'
-});
-
-const style = {
-  margin: 12,
+const formStyle = {
+  textAlign: 'center',
+  marginLeft: 10,
+  marginRight: 10
 };
 
 class Register extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.state = {
+      studentName: '',
+      studentId: '',
+      password: '',
+      studentNameError: '',
+      userIdError: ''
+    };
+  }
+
+  handleChange = (event) => {
+    this.setState({
+      [event.target.id]: event.target.value
+    });
+  }
+
+  handleSubmit = () => {
+    console.log('submit......');
+    if (this.state.studentName == '') {
+      this.setState({
+        studentNameError: '请输入姓名'
+      });
+    }
+    const { register } = this.props.actions;
+    register();
+  }
+
+  handleClose = () => {
+    const { confirmMessage } = this.props.actions;
+    confirmMessage();
   }
 
   render() {
     return (
-       <MuiThemeProvider muiTheme={muiTheme}>
-       <div>
-   <RaisedButton label="Default" style={style} />
-   <RaisedButton label="Primary" primary={true} style={style} />
-   <RaisedButton label="Secondary" secondary={true} style={style} />
-   <RaisedButton label="Disabled" disabled={true} style={style} />
- </div>
+       <MuiThemeProvider  muiTheme={ getMuiTheme({userAgent: this.props.value.userAgent}) }>
+         <div >
+         <AppBar
+           title="帐号绑定"
+         />
+         <div style={formStyle} >
+         <TextField
+          id="studentName"
+          floatingLabelText="姓名"
+          hintText="请输入姓名"
+          errorText={this.state.studentNameError}
+          value={this.state.studentName}
+          onChange={this.handleChange}
+          fullWidth={true} />
+         <TextField
+           id="studentId"
+           floatingLabelText="学号"
+           hintText="请输入学号"
+           value={this.state.studentId}
+           onChange={this.handleChange}
+           fullWidth={true} />
+         <TextField
+           id="password"
+           floatingLabelText="密码"
+           hintText="请输入密码"
+           value={this.state.password}
+           onChange={this.handleChange}
+           type="password"
+           fullWidth={true} />
+         <RaisedButton
+           id="bind"
+           label="绑定帐号"
+           onTouchTap={this.handleSubmit}
+           primary={true}
+           fullWidth={true} />
+         </div>
+         {this.renderDialog()}
+         </div>
        </MuiThemeProvider>
+    );
+  }
+
+  renderDialog() {
+    const { message } = this.props.value.app;
+    if (!message) {
+      return;
+    }
+    const actions = [
+      <FlatButton
+        label="确认"
+        primary={true}
+        onTouchTap={this.handleClose}
+      />
+    ];
+    return (
+      <Dialog
+          actions={actions}
+          modal={true}
+          open={true}
+          onRequestClose={this.handleClose} >
+        {message}
+      </Dialog>
     );
   }
 }

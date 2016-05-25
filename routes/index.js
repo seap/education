@@ -26,9 +26,11 @@ router.use((req, res) => {
   if (__DEVELOPMENT__) {
     webpackIsomorphicTools.refresh();
   }
-  // console.log(req.headers['user-agent']);
+  const initialState = {
+    userAgent: req.headers['user-agent']
+  }
   const memoryHistory = createMemoryHistory(req.originalUrl);
-  const store = createStore(memoryHistory, undefined);
+  const store = createStore(memoryHistory, initialState);
   const history = syncHistoryWithStore(memoryHistory, store);
   const hydrateOnClient = (status = 200) => {
     const html = ReactDOM.renderToString(

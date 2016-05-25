@@ -1,4 +1,4 @@
-import { MESSAGE_SEND } from '../constants/actionTypes';
+import { ACTION_MESSAGE_SEND, ACTION_MESSAGE_CONFIRMATION } from '../constants/actionTypes';
 import fetch from 'isomorphic-fetch';
 import Cookies from 'js-cookie';
 
@@ -6,9 +6,22 @@ import Cookies from 'js-cookie';
 export function sendMessage(message) {
   message = message || '服务异常';
   return {
-    type: MESSAGE_SEND,
+    type: ACTION_MESSAGE_SEND,
     message: message
   };
+}
+
+// 确认消息
+export function confirmMessage() {
+  return {
+    type: ACTION_MESSAGE_CONFIRMATION
+  }
+}
+
+export function register() {
+  return async (dispatch, getState) => {
+    return dispatch(sendMessage('服务异常！'));
+  }
 }
 
 export function wxConfig() {
@@ -43,9 +56,7 @@ export function stopRecord() {
       wx.playVoice(res);
       console.log('playing...');
     }
-});
-
-
+  });
 }
 
 export function record() {

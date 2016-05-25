@@ -37,7 +37,7 @@ class Login extends Component {
     return (
       <div className={ styles.uiForm }>
       logo picture
-      <MuiThemeProvider muiTheme={getMuiTheme()}>
+      <MuiThemeProvider muiTheme={ getMuiTheme({userAgent: this.props.value.userAgent}) }>
         <div>
         <TextField
           floatingLabelText="姓名"
