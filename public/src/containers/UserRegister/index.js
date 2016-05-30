@@ -1,31 +1,44 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 import * as IndexActions from '../../actions';
-
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import Dialog from 'material-ui/Dialog';
+import RefreshIndicator from 'material-ui/RefreshIndicator';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 
-const formStyle = {
-  textAlign: 'center',
-  marginLeft: 10,
-  marginRight: 10
+
+const style = {
+  container: {
+    position: 'relative',
+  },
+  bindForm: {
+    textAlign: 'center',
+    marginLeft: 10,
+    marginRight: 10
+  },
+  refresh: {
+    display: 'inline-block',
+    position: 'relative',
+    marginLeft: '50%'
+  },
 };
 
-class Register extends Component {
+class UserRegister extends Component {
   constructor(props) {
     super(props);
     this.state = {
       studentName: '',
-      studentId: '',
+      parentName: '',
+      phone: '',
       password: '',
-      studentNameError: '',
+      // studentNameError: '',
       userIdError: ''
     };
   }
@@ -38,13 +51,13 @@ class Register extends Component {
 
   handleSubmit = () => {
     console.log('submit......');
-    if (this.state.studentName == '') {
-      this.setState({
-        studentNameError: '请输入姓名'
-      });
-    }
+    // if (this.state.studentName == '') {
+    //   this.setState({
+    //     studentNameError: '请输入姓名'
+    //   });
+    // }
     const { register } = this.props.actions;
-    register();
+    register(this.state);
   }
 
   handleClose = () => {
@@ -55,24 +68,31 @@ class Register extends Component {
   render() {
     return (
        <MuiThemeProvider  muiTheme={ getMuiTheme({userAgent: this.props.value.userAgent}) }>
-         <div >
+         <div style={style.container}>
+
          <AppBar
-           title="帐号绑定"
+           title="帐号注册"
          />
-         <div style={formStyle} >
+         <div style={style.bindForm} >
          <TextField
           id="studentName"
-          floatingLabelText="姓名"
-          hintText="请输入姓名"
-          errorText={this.state.studentNameError}
+          floatingLabelText="学生姓名"
+          hintText="请输入学生姓名"
           value={this.state.studentName}
           onChange={this.handleChange}
           fullWidth={true} />
+        <TextField
+         id="parentName"
+         floatingLabelText="家长姓名"
+         hintText="请输入家长姓名"
+         value={this.state.parentName}
+         onChange={this.handleChange}
+         fullWidth={true} />
          <TextField
-           id="studentId"
-           floatingLabelText="学号"
-           hintText="请输入学号"
-           value={this.state.studentId}
+           id="phone"
+           floatingLabelText="手机号"
+           hintText="请输入手机号"
+           value={this.state.phone}
            onChange={this.handleChange}
            fullWidth={true} />
          <TextField
@@ -84,13 +104,14 @@ class Register extends Component {
            type="password"
            fullWidth={true} />
          <RaisedButton
-           id="bind"
-           label="绑定帐号"
+           id="register"
+           label="注册"
            onTouchTap={this.handleSubmit}
            primary={true}
            fullWidth={true} />
          </div>
          {this.renderDialog()}
+         {this.renderLoading()}
          </div>
        </MuiThemeProvider>
     );
@@ -118,9 +139,23 @@ class Register extends Component {
       </Dialog>
     );
   }
+
+  renderLoading() {
+    if (this.props.value.app.isFetching) {
+      return (
+        <RefreshIndicator
+           size={40}
+           left={-20}
+           top={10}
+           status="loading"
+           style={style.refresh}
+         />
+      );
+    }
+  }
 }
 
-Register.propTypes = {
+UserRegister.propTypes = {
 };
 
 const mapStateToProps = state => ({ value: state });
@@ -129,4 +164,4 @@ const mapDispatchToProps = dispatch => (
   { actions: bindActionCreators(IndexActions, dispatch) }
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(Register);
+export default connect(mapStateToProps, mapDispatchToProps)(UserRegister);

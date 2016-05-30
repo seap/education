@@ -1,12 +1,12 @@
-import { ACTION_MESSAGE_SEND, ACTION_MESSAGE_CONFIRMATION } from '../constants/actionTypes';
 import fetch from 'isomorphic-fetch';
 import Cookies from 'js-cookie';
+import * as ActionTypes from '../constants/actionTypes';
 
 // 发送消息
 export function sendMessage(message) {
   message = message || '服务异常';
   return {
-    type: ACTION_MESSAGE_SEND,
+    type: ActionTypes.ACTION_MESSAGE_SEND,
     message: message
   };
 }
@@ -14,13 +14,60 @@ export function sendMessage(message) {
 // 确认消息
 export function confirmMessage() {
   return {
-    type: ACTION_MESSAGE_CONFIRMATION
+    type: ActionTypes.ACTION_MESSAGE_CONFIRMATION
   }
 }
 
-export function register() {
+// 数据请求
+export function fetchRequest() {
+  return {
+    type: ActionTypes.ACTION_FETCH_REQUEST
+  }
+}
+
+// 注册
+export function register(data) {
   return async (dispatch, getState) => {
-    return dispatch(sendMessage('服务异常！'));
+    if (getState().app.isFetching) {
+      return;
+    }
+    //数据校验
+    if (!data.studentName) {
+      return dispatch(sendMessage('请输入学生姓名！'));
+    }
+    if (!data.parentName) {
+      return dispatch(sendMessage('请输入家长姓名！'));
+    }
+    if (!data.phone) {
+      return dispatch(sendMessage('请输入手机号！'));
+    }
+    if (!data.password) {
+      return dispatch(sendMessage('请输入密码！'));
+    }
+    dispatch(fetchRequest());
+
+    //return dispatch(sendMessage('服务异常！'));
+  }
+}
+
+// 学号密码绑定
+export function bind(data) {
+  return async (dispatch, getState) => {
+    if (getState().app.isFetching) {
+      return;
+    }
+    //数据校验
+    if (!data.studentId) {
+      return dispatch(sendMessage('请输入学号！'));
+    }
+    if (!data.password) {
+      return dispatch(sendMessage('请输入密码！'));
+    }
+    // if (!data.remark) {
+    //   return dispatch(sendMessage('请输入备注！'));
+    // }
+    dispatch(fetchRequest());
+    //return dispatch(sendMessage('服务异常！'));
   }
 }
 

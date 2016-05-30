@@ -8,7 +8,15 @@ function routes(store){
   const register = {
     path: '/register',
     getComponent(location, callback) {
-      require.ensure([], require => callback(null, require('./containers/Register').default));
+      require.ensure([], require => callback(null, require('./containers/UserRegister').default));
+    }
+  };
+
+  //绑定
+  const bind = {
+    path: '/bind',
+    getComponent(location, callback) {
+      require.ensure([], require => callback(null, require('./containers/UserBinding').default));
     }
   };
 
@@ -35,7 +43,7 @@ function routes(store){
     getIndexRoute(location, callback) {
       require.ensure([], require => callback(null, {component: require('./containers/Login').default}));
     },
-    childRoutes: [register, mytask, notFoundPage]
+    childRoutes: [bind, register, mytask, notFoundPage]
   };
 
   return rootRoute;

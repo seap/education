@@ -6,8 +6,9 @@ const router = express.Router();
 
 // 微信配置
 const config = {
+    baseUrl: 'http://w.siline.cn',
     token: 'seayangtoken',
-    appid: 'wxb558fbe29d74764d',
+    appid: 'wx95013eaa68c846c7',
     appsecret: '2d46bd429636b8e05a64c62aa0d2e8fd',
     encodingAESKey: 'QHhz7I8hHAGafbNxx40MLMtE2jOcfBJ6Ctcg1bpDXsM'
 };
@@ -137,7 +138,7 @@ router.get('/signature', async (req, res) => {
     }
   }
 
-  const url = req.query.url || 'http://w.seayang.me/'; // || req.originalUrl;
+  const url = req.query.url || config.baseUrl; // || req.originalUrl;
   let signatureObj = cachedSignatures[url];
   if (signatureObj && (signatureObj.ticket == cachedTicket.ticket)) {
     return res.json(signatureObj);
