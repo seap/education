@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as IndexActions from '../../actions';
@@ -40,6 +41,7 @@ class UserRegister extends Component {
       // studentNameError: '',
       userIdError: ''
     };
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   handleChange = (event) => {
