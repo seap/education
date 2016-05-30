@@ -129,7 +129,7 @@ class UserBinding extends Component {
       <FlatButton
         label="确认"
         primary={true}
-        onTouchTap={this.handleClose}
+        onClick={this.handleClose}
       />
     ];
     return (

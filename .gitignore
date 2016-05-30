@@ -2,3 +2,4 @@
 .DS_Store
 /webpack-assets.json
 node_modules.tar
+npm-debug.log

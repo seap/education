@@ -9,7 +9,7 @@ const config = {
     baseUrl: 'http://w.siline.cn',
     token: 'seayangtoken',
     appid: 'wx95013eaa68c846c7',
-    appsecret: '2d46bd429636b8e05a64c62aa0d2e8fd',
+    appsecret: 'fc697dc4bc4e077a3ea4adb823caf69a',
     encodingAESKey: 'QHhz7I8hHAGafbNxx40MLMtE2jOcfBJ6Ctcg1bpDXsM'
 };
 

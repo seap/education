@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
 import * as IndexActions from '../../actions';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -126,7 +125,7 @@ class UserRegister extends Component {
       <FlatButton
         label="确认"
         primary={true}
-        onTouchTap={this.handleClose}
+        onClick={this.handleClose}
       />
     ];
     return (
