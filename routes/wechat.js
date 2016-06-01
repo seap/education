@@ -7,10 +7,11 @@ const router = express.Router();
 // 微信配置
 const config = {
     baseUrl: 'http://w.siline.cn',
+    redirectUrl: 'http://w.siline.cn/wechat/redirect',
     token: 'seayangtoken',
-    appid: 'wx95013eaa68c846c7',
-    appsecret: 'fc697dc4bc4e077a3ea4adb823caf69a',
-    encodingAESKey: 'QHhz7I8hHAGafbNxx40MLMtE2jOcfBJ6Ctcg1bpDXsM'
+    appId: 'wx95013eaa68c846c7',
+    appSecret: 'fc697dc4bc4e077a3ea4adb823caf69a',
+    encodingAESKey: 'QHhz7I8hHAGafbNxx40MLMtE2jOcfBJ6Ctcg1bpDXsM',
 };
 
 function sha1(str){
@@ -87,7 +88,7 @@ router.get('/token', async (req, res) => {
     }
   }
   try {
-    let response = await fetch(`https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${config.appid}&secret=${config.appsecret}`);
+    let response = await fetch(`https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${config.appId}&secret=${config.appSecret}`);
     let json = await response.json();
     json.timestamp = timestamp;
     console.log(json);
@@ -149,6 +150,45 @@ router.get('/signature', async (req, res) => {
   console.log(signatureObj);
   cachedSignatures[url] = signatureObj;
   res.json(signatureObj);
+});
+
+//微信登录
+router.get('/login', (req, res) => {
+    if (/MicroMessenger/i.test(req.get('User-Agent'))) {
+        let referer = decodeURIComponent(req.query.referer)||req.cookies.referer;
+        res.cookie('referer', referer, {domain:res.locals.domain});
+        let redirectUrl = encodeURIComponent(config.redirectUrl);
+        return res.redirect(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=${config.appId}&redirect_uri=${redirectUrl}&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect`);
+    }
+});
+
+//微信跳转, /wechat/redirect?code=021rUtAa2OqSlC0Cs3Ba2NPtAa2rUtA3&state=1
+router.get('/redirect', async (req, res) => {
+  try {
+    // 通过code换取网页授权access_token
+    let response = await fetch(`https://api.weixin.qq.com/sns/oauth2/access_token?appid=${config.appId}&secret=${config.appSecret}&code=${req.query.code}&grant_type=authorization_code`);
+    let json = await response.json();
+    const openId = json.openid;
+    // 判断用户是否绑定
+    response = await fetch(`http://192.168.31.108/english/webservice/account/is_binding?openid=${json.openid}`);
+    console.log(response);
+    json = await response.json();
+
+    console.log(json);
+    if (json.errno === 0) {
+      res.redirect(req.cookies.referer || config.baseUrl);
+    } else if (json.errno === 1) {
+      // 未绑定，跳转绑定页面
+      res.cookie('openid', openId);
+      res.redirect('/bind');
+    } else {
+      res.end(json.errmsg || '未知错误');
+    }
+  } catch (e) {
+    console.log(e);
+    res.json('false');
+  }
+
 });
 
 export default router;
