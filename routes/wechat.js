@@ -170,12 +170,11 @@ router.get('/redirect', async (req, res) => {
     let json = await response.json();
     const openId = json.openid;
     // 判断用户是否绑定
-    response = await fetch(`http://192.168.31.108/english/webservice/account/is_binding?openid=${json.openid}`);
-    console.log(response);
+    response = await fetch(`${config.baseUrl}/webservice/account/is_binding?openid=${json.openid}`);
     json = await response.json();
 
-    console.log(json);
     if (json.errno === 0) {
+      // 已绑定
       res.redirect(req.cookies.referer || config.baseUrl);
     } else if (json.errno === 1) {
       // 未绑定，跳转绑定页面

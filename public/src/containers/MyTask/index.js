@@ -26,6 +26,7 @@ import EditorInsertChart from 'material-ui/svg-icons/editor/insert-chart';
 import Slider from 'material-ui/Slider';
 import styles from './main.scss';
 
+import DropDownMenu from 'material-ui/DropDownMenu';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
@@ -51,18 +52,18 @@ class MyTask extends Component {
 
       <MuiThemeProvider muiTheme={getMuiTheme()}>
       <div>
-        <AppBar
-          title="我的作业"
-        />
-
-        <SelectField
+        <AppBar title="我的作业" />
+        <div>
+        当前班级
+        <DropDownMenu
           value={this.state.value}
-          onChange={this.handleChange}
-          floatingLabelText="当前班级"
-          fullWidth={true}>
+          onChange={this.handleChange}>
           <MenuItem value={1} primaryText="英语" />
           <MenuItem value={2} primaryText="数学" />
-        </SelectField>
+        </DropDownMenu>
+        </div>
+
+
         <Tabs>
         <Tab label="未完成作业" >
           <div>
