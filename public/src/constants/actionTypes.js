@@ -5,3 +5,10 @@ export const ACTION_MESSAGE_CONFIRMATION = 'ACTION_MESSAGE_CONFIRMATION'; //消�
 
 // 数据请求
 export const ACTION_FETCH_REQUEST = 'ACTION_FETCH_REQUEST';
+
+// 我的所有课程加载
+export const ACTION_MY_ALL_TASK_LOADED = 'ACTION_MY_ALL_TASK_LOADED';
+// 我的课程加载
+export const ACTION_MY_CLASS_LOADED = 'ACTION_MY_CLASS_LOADED';
+// 我的作业加载
+export const ACTION_MY_TASK_LOADED = 'ACTION_MY_TASK_LOADED';

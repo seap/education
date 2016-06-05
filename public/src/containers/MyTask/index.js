@@ -20,7 +20,7 @@ import IconDone from 'material-ui/svg-icons/action/done';
 import Divider from 'material-ui/Divider';
 import FileFolder from 'material-ui/svg-icons/file/folder';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
-import {blue500, yellow600} from 'material-ui/styles/colors';
+import {blue500, yellow500, grey500} from 'material-ui/styles/colors';
 import EditorInsertChart from 'material-ui/svg-icons/editor/insert-chart';
 
 import Slider from 'material-ui/Slider';
@@ -30,118 +30,112 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
+import { dateFormat } from '../../common/js/utility';
+
 class MyTask extends Component {
   constructor() {
     super();
+    this.myTasks = null;
     this.state = {
-      value: 1
+      currentClass: null
     }
   }
 
-  _bind(...arr) {
-    for (let item of arr) {
-      this[item] = this[item].bind(this);
-    }
+  componentDidMount() {
+    const { fetchAllMyTasks } = this.props.actions;
+    fetchAllMyTasks && fetchAllMyTasks();
   }
 
-  handleChange = (event, index, value) => this.setState({value});
+  handleClassChange = (event, index, value) => this.setState({
+    currentClass: value
+  });
 
-  render() {
-    return (
-      <div className={ styles.uiForm }>
-
-      <MuiThemeProvider muiTheme={getMuiTheme()}>
-      <div>
-        <AppBar title="我的作业" />
+  renderMyClasses() {
+    const { myClasses } = this.props.value.app;
+    if (myClasses) {
+      const classList = myClasses.map((clazz, index) =>
+        <MenuItem key={index} value={clazz.clazz_id} primaryText={clazz.clazz_name} />
+      );
+      // console.log(myClasses[0].clazz_id);
+      return (
         <div>
         当前班级
         <DropDownMenu
-          value={this.state.value}
-          onChange={this.handleChange}>
-          <MenuItem value={1} primaryText="英语" />
-          <MenuItem value={2} primaryText="数学" />
+          value={this.state.currentClass}
+          onChange={this.handleClassChange}>
+          {classList}
         </DropDownMenu>
         </div>
+      );
+    }
 
+  }
+  // 渲染已批改作业
+  renderCompletedTasks() {
+    if (this.myTasks) {
+      let completedTasks = this.myTasks.filter((task)=>task.status === 'compl');
+      return completedTasks.map((task, index) =>
+        <ListItem
+          key={task.task_id}
+          leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={grey500} />}
+          rightIcon={<IconDone />}
+          primaryText={task.task_name}
+          secondaryText={dateFormat(new Date(parseInt(task.create_date)*1000), 'yyyy-MM-dd')}
+        />
+      )
+    }
+  }
 
-        <Tabs>
-        <Tab label="未完成作业" >
-          <div>
-          <List>
-            <Subheader inset={true}>未完成 未提交作业</Subheader>
-            <ListItem
-              leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={blue500} />}
-              rightIcon={<IconCreate />}
-              primaryText="作业XXXX"
-              secondaryText="2016-05-25"
-            />
-            <ListItem
-              leftAvatar={<Avatar icon={<EditorInsertChart />} backgroundColor={yellow600} />}
-              rightIcon={<IconCreate />}
-              primaryText="作业YYYYY"
-              secondaryText="2016-05-25"
-            />
-            <ListItem
-              leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={blue500} />}
-              rightIcon={<IconCreate />}
-              primaryText="作业XXXX"
-              secondaryText="2016-05-25"
-            />
-            <ListItem
-              leftAvatar={<Avatar icon={<EditorInsertChart />} backgroundColor={yellow600} />}
-              rightIcon={<IconCreate />}
-              primaryText="作业YYYYY"
-              secondaryText="2016-05-25"
-            />
-            <ListItem
-              leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={blue500} />}
-              rightIcon={<IconCreate />}
-              primaryText="作业XXXX"
-              secondaryText="2016-05-25"
-            />
-            <ListItem
-              leftAvatar={<Avatar icon={<EditorInsertChart />} backgroundColor={yellow600} />}
-              rightIcon={<IconCreate />}
-              primaryText="作业YYYYY"
-              secondaryText="2016-05-25"
-            />
-            <ListItem
-              leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={blue500} />}
-              rightIcon={<IconCreate />}
-              primaryText="作业XXXX"
-              secondaryText="2016-05-25"
-            />
-            <ListItem
-              leftAvatar={<Avatar icon={<EditorInsertChart />} backgroundColor={yellow600} />}
-              rightIcon={<IconCreate />}
-              primaryText="作业YYYYY"
-              secondaryText="2016-05-25"
-            />
-          </List>
-          </div>
-        </Tab>
-        <Tab label="已完成作业" >
-          <List>
-            <Subheader inset={true}>已完成作业</Subheader>
-            <ListItem
-              leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={blue500} />}
-              rightIcon={<IconDone />}
-              primaryText="作业"
-              secondaryText="2016-05-20"
-            />
-            <ListItem
-              leftAvatar={<Avatar icon={<EditorInsertChart />} backgroundColor={yellow600} />}
-              rightIcon={<IconDone />}
-              primaryText="Kitchen remodel"
-              secondaryText="2016-05-21"
-            />
-          </List>
-        </Tab>
+  // 渲染当前作业
+  renderCurrentTasks() {
+    if (this.myTasks) {
+      let currentTasks = this.myTasks.filter((task)=>task.status !== 'compl');
+      return currentTasks.map((task, index) =>
+        <ListItem
+          key={task.task_id}
+          leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={task.status === 'nocom' ? blue500 : yellow500} />}
+          rightIcon={<IconCreate />}
+          primaryText={task.task_name}
+          secondaryText={dateFormat(new Date(parseInt(task.create_date)*1000), 'yyyy-MM-dd')}
+        />
+      )
+    }
+  }
 
-      </Tabs>
-      </div>
-      </MuiThemeProvider>
-
+  render() {
+    const { myClasses } = this.props.value.app;
+    if (this.state.currentClass) {
+      for (let i = 0; i < myClasses.length; i++) {
+        if (this.state.currentClass == myClasses[i].clazz_id) {
+          this.myTasks = myClasses[i].tasks;
+          break;
+        }
+      }
+    } else if (myClasses && myClasses[0]) {
+      this.state.currentClass = myClasses[0].clazz_id;
+      this.myTasks = myClasses[0].tasks;
+    }
+    return (
+      <div>
+        <MuiThemeProvider muiTheme={ getMuiTheme({userAgent: this.props.value.userAgent}) }>
+        <div>
+          <AppBar title="我的作业" />
+          {this.renderMyClasses()}
+          <Tabs>
+          <Tab label="当前作业" >
+            <div>
+            <List>
+              <Subheader inset={true}>未提交作业</Subheader>
+              {this.renderCurrentTasks()}
+            </List>
+            </div>
+          </Tab>
+          <Tab label="已批改作业" >
+            {this.renderCompletedTasks()}
+          </Tab>
+        </Tabs>
+        </div>
+        </MuiThemeProvider>
       </div>
     );
   }

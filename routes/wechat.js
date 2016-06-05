@@ -170,7 +170,7 @@ router.get('/redirect', async (req, res) => {
     let json = await response.json();
     const openId = json.openid;
     // 判断用户是否绑定
-    response = await fetch(`${config.baseUrl}/webservice/account/is_binding?openid=${json.openid}`);
+    response = await fetch(`${config.baseUrl}/webservice/account/is_binding?openId=${openId}`);
     json = await response.json();
 
     if (json.errno === 0) {
@@ -178,7 +178,7 @@ router.get('/redirect', async (req, res) => {
       res.redirect(req.cookies.referer || config.baseUrl);
     } else if (json.errno === 1) {
       // 未绑定，跳转绑定页面
-      res.cookie('openid', openId);
+      res.cookie('openid', openId, { expires: new Date(Date.now() + 900000) });
       res.redirect('/bind');
     } else {
       res.end(json.errmsg || '未知错误');

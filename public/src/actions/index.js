@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import Cookies from 'js-cookie';
+import { push } from 'react-router-redux';
 import * as ActionTypes from '../constants/actionTypes';
 
 // 发送消息
@@ -110,4 +111,52 @@ export function record() {
 
     wx.startRecord();
 
+}
+
+
+function allMyTaskLoaded(tasks) {
+  return {
+    type: ActionTypes.ACTION_MY_ALL_TASK_LOADED,
+    tasks
+  };
+}
+
+//查询我的所有作业
+export function fetchAllMyTasks() {
+
+  return async (dispatch, getState) => {
+    // const openId = Cookies.get('openid');
+    // if (!openId) {
+    //   //未绑定登录
+    //   return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
+    // }
+    const openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    try {
+      let response = await fetch(`/webservice/student/query_clazz?openId=${openId}`);
+      let json = await response.json();
+      if (json.errno !== 0 && json.data) {
+        return dispatch(sendMessage(json.errmsg));
+      }
+
+      let myClasses = json.data;
+      for (let i = 0; i < myClasses.length; i++) {
+        response = await fetch(`/webservice/student/query_task?openId=${openId}&classId=${myClasses[i].clazz_id}`);
+        json = await response.json();
+        if (json.errno === 0) {
+          myClasses[i].tasks = json.data
+        }
+      }
+      // myClasses.map(async (clazz) => {
+      //   response = await fetch(`/webservice/student/query_task?openId=${openId}&classId=${clazz.clazz_id}`);
+      //   json = await response.json();
+      //   if (json.errno === 0) {
+      //     clazz.tasks = json.data
+      //   }
+      // });
+      dispatch(allMyTaskLoaded(myClasses));
+    } catch (e) {
+      console.log(e);
+    }
+
+  }
 }
