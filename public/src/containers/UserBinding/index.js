@@ -54,13 +54,6 @@ class UserBinding extends Component {
   }
 
   handleSubmit = () => {
-
-    console.log('submit......');
-    // if (this.state.studentName == '') {
-    //   this.setState({
-    //     studentNameError: '请输入姓名'
-    //   });
-    // }
     const { isFetching, bind } = this.props.actions;
     if (isFetching) {
       return;
@@ -84,23 +77,20 @@ class UserBinding extends Component {
          <div style={style.bindForm} >
          <TextField
            id="studentId"
-           floatingLabelText="学号"
-           hintText="请输入学号"
+           hintText="学号"
            value={this.state.studentId}
            onChange={this.handleChange}
            fullWidth={true} />
          <TextField
            id="password"
-           floatingLabelText="密码"
-           hintText="请输入密码"
+           hintText="密码"
            value={this.state.password}
            onChange={this.handleChange}
            type="password"
            fullWidth={true} />
          <TextField
           id="remark"
-          floatingLabelText="备注"
-          hintText="请输入备注"
+          hintText="备注"
           value={this.state.remark}
           onChange={this.handleChange}
           fullWidth={true} />

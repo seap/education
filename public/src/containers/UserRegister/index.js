@@ -77,29 +77,25 @@ class UserRegister extends Component {
          <div style={style.bindForm} >
          <TextField
           id="studentName"
-          floatingLabelText="学生姓名"
-          hintText="请输入学生姓名"
+          hintText="学生姓名"
           value={this.state.studentName}
           onChange={this.handleChange}
           fullWidth={true} />
         <TextField
          id="parentName"
-         floatingLabelText="家长姓名"
-         hintText="请输入家长姓名"
+         hintText="家长姓名"
          value={this.state.parentName}
          onChange={this.handleChange}
          fullWidth={true} />
          <TextField
            id="phone"
-           floatingLabelText="手机号"
-           hintText="请输入手机号"
+           hintText="手机号"
            value={this.state.phone}
            onChange={this.handleChange}
            fullWidth={true} />
          <TextField
            id="password"
-           floatingLabelText="密码"
-           hintText="请输入密码"
+           hintText="密码"
            value={this.state.password}
            onChange={this.handleChange}
            type="password"
