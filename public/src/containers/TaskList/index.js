@@ -122,6 +122,7 @@ class TaskList extends Component {
     }
     return (
       <div>
+        <Helmet title="我的作业" />
         <MuiThemeProvider muiTheme={ getMuiTheme({userAgent: this.props.value.userAgent}) }>
         <div>
           <AppBar title="我的作业" />

@@ -23,6 +23,7 @@ import IconClear from 'material-ui/svg-icons/content/clear';
 import IconSave from 'material-ui/svg-icons/file/cloud-done';
 import IconSubmit from 'material-ui/svg-icons/file/cloud-upload';
 
+import TitleRefresh from '../../components/TitleRefresh';
 
 class TaskDetail extends Component {
   constructor() {
@@ -125,11 +126,13 @@ class TaskDetail extends Component {
   render() {
     return (
       <div>
+      <Helmet title="作业详情" />
         <MuiThemeProvider muiTheme={ getMuiTheme({userAgent: this.props.value.userAgent}) }>
         <div>
           {this.renderTaskDetail()}
         </div>
         </MuiThemeProvider>
+        <TitleRefresh />
       </div>
     );
   }
