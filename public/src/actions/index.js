@@ -76,8 +76,11 @@ export function wxConfig() {
   return async (dispatch, getState) => {
     try {
       await fetch(`/wechat/token`);
+      alert(window.location.href);
       let response = await fetch(`/wechat/signature?url=${encodeURIComponent(window.location.href)}`);
       let json = await response.json();
+      alert('url: ', json.url);
+
       wx.config({
         debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
         appId: 'wx95013eaa68c846c7', // 必填，公众号的唯一标识
@@ -86,7 +89,6 @@ export function wxConfig() {
         signature: json.signature,// 必填，签名，见附录1
         jsApiList: ['startRecord', 'stopRecord', 'onVoiceRecordEnd', 'playVoice', 'pauseVoice', 'stopVoice', 'onVoicePlayEnd', 'uploadVoice', 'downloadVoice'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
       });
-      alert('url: ', json.url);
       wx.ready(function(){
         console.log('wx config ready.');
       });
