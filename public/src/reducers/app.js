@@ -4,6 +4,7 @@ const initialState = {
   isFetching: false,
   message: null,
   myClasses: [],
+  currentTask: null
 };
 export default function app(state = initialState, action) {
 
@@ -25,6 +26,9 @@ export default function app(state = initialState, action) {
 
     case ActionTypes.ACTION_MY_ALL_TASK_LOADED:
       return Object.assign({}, state, {myClasses: action.tasks});
+
+    case ActionTypes.ACTION_TASK_DETAIL_LOADED:
+      return Object.assign({}, state, {currentTask: action.task});
     default:
       return state;
   }

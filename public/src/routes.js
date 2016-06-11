@@ -21,10 +21,18 @@ function routes(store){
   };
 
   //我的作业
-  const mytask = {
-    path: '/mytask',
+  const taskList = {
+    path: '/task/list',
     getComponent(location, callback) {
-      require.ensure([], require => callback(null, require('./containers/MyTask').default));
+      require.ensure([], require => callback(null, require('./containers/TaskList').default));
+    }
+  };
+
+  //作业详情
+  const taskDetail = {
+    path: '/task/detail/:taskId',
+    getComponent(location, callback) {
+      require.ensure([], require => callback(null, require('./containers/TaskDetail').default));
     }
   };
 
@@ -43,7 +51,7 @@ function routes(store){
     getIndexRoute(location, callback) {
       require.ensure([], require => callback(null, {component: require('./containers/Login').default}));
     },
-    childRoutes: [bind, register, mytask, notFoundPage]
+    childRoutes: [bind, register, taskList, taskDetail, notFoundPage]
   };
 
   return rootRoute;

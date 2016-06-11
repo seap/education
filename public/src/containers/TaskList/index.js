@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 import Helmet from 'react-helmet';
 import * as IndexActions from '../../actions';
 
@@ -32,7 +33,7 @@ import MenuItem from 'material-ui/MenuItem';
 
 import { dateFormat } from '../../common/js/utility';
 
-class MyTask extends Component {
+class TaskList extends Component {
   constructor() {
     super();
     this.myTasks = null;
@@ -75,6 +76,7 @@ class MyTask extends Component {
     if (this.myTasks) {
       let completedTasks = this.myTasks.filter((task)=>task.status === 'compl');
       return completedTasks.map((task, index) =>
+        <Link to={`/task/detail/${task.task_id}`}>
         <ListItem
           key={task.task_id}
           leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={grey500} />}
@@ -82,6 +84,7 @@ class MyTask extends Component {
           primaryText={task.task_name}
           secondaryText={dateFormat(new Date(parseInt(task.create_date)*1000), 'yyyy-MM-dd')}
         />
+        </Link>
       )
     }
   }
@@ -91,6 +94,7 @@ class MyTask extends Component {
     if (this.myTasks) {
       let currentTasks = this.myTasks.filter((task)=>task.status !== 'compl');
       return currentTasks.map((task, index) =>
+        <Link to={`/task/detail/${task.task_id}`}>
         <ListItem
           key={task.task_id}
           leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={task.status === 'nocom' ? blue500 : yellow500} />}
@@ -98,6 +102,7 @@ class MyTask extends Component {
           primaryText={task.task_name}
           secondaryText={dateFormat(new Date(parseInt(task.create_date)*1000), 'yyyy-MM-dd')}
         />
+        </Link>
       )
     }
   }
@@ -141,7 +146,7 @@ class MyTask extends Component {
   }
 }
 
-MyTask.propTypes = {
+TaskList.propTypes = {
 };
 
 const mapStateToProps = state => ({ value: state });
@@ -150,4 +155,4 @@ const mapDispatchToProps = dispatch => (
   { actions: bindActionCreators(IndexActions, dispatch) }
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(MyTask);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskList);

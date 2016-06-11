@@ -76,11 +76,11 @@ export function wxConfig() {
   return async (dispatch, getState) => {
     try {
       await fetch(`/wechat/token`);
-      let response = await fetch(`/wechat/signature`);
+      let response = await fetch(`/wechat/signature?url=${encodeURIComponent(window.location.href)}`);
       let json = await response.json();
       wx.config({
-        debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-        appId: 'wxb558fbe29d74764d', // 必填，公众号的唯一标识
+        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: 'wx95013eaa68c846c7', // 必填，公众号的唯一标识
         timestamp: json.timestamp , // 必填，生成签名的时间戳
         nonceStr: json.noncestr, // 必填，生成签名的随机串
         signature: json.signature,// 必填，签名，见附录1
@@ -96,23 +96,25 @@ export function wxConfig() {
   }
 }
 
+// 开始录音
+export function startRecord() {
+  return (dispatch, getState) => {
+    wx && wx.startRecord();
+  };
+}
+
+// 停止录音
 export function stopRecord() {
-  wx.stopRecord({
-    success: function (res) {
-      console.log('stop successed, res', res);
-
-      wx.playVoice(res);
-      console.log('playing...');
-    }
-  });
+  return (dispatch, getState) => {
+    wx && wx.stopRecord({
+      success: function (res) {
+        console.log('stop successed, res', res);
+        wx.playVoice(res);
+        console.log('playing...');
+      }
+    });
+  }
 }
-
-export function record() {
-
-    wx.startRecord();
-
-}
-
 
 function allMyTaskLoaded(tasks) {
   return {
@@ -158,5 +160,34 @@ export function fetchAllMyTasks() {
       console.log(e);
     }
 
+  }
+}
+
+function taskDetailLoaded(task) {
+  return {
+    type: ActionTypes.ACTION_TASK_DETAIL_LOADED,
+    task
+  };
+}
+
+export function fetchTaskDetail(params) {
+  return async (dispatch, getState) => {
+    // const openId = Cookies.get('openid');
+    // if (!openId) {
+    //   //未绑定登录
+    //   return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
+    // }
+    const openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    try {
+      let response = await fetch(`/webservice/student/query_task_info?openId=${openId}&taskId=${params.taskId}`);
+      let json = await response.json();
+      if (json.errno !== 0 && json.data) {
+        return dispatch(sendMessage(json.errmsg));
+      }
+
+      dispatch(taskDetailLoaded(json.data));
+    } catch (e) {
+      console.log(e);
+    }
   }
 }
