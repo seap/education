@@ -86,6 +86,7 @@ export function wxConfig() {
         signature: json.signature,// 必填，签名，见附录1
         jsApiList: ['startRecord', 'stopRecord', 'onVoiceRecordEnd', 'playVoice', 'pauseVoice', 'stopVoice', 'onVoicePlayEnd', 'uploadVoice', 'downloadVoice'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
       });
+      alert('url: ', json.url);
       wx.ready(function(){
         console.log('wx config ready.');
       });
