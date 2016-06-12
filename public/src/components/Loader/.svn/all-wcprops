@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/front/!svn/ver/7330/vip_web/trunk/public/src/components/Loader
+END
+index.js
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/front/!svn/ver/7330/vip_web/trunk/public/src/components/Loader/index.js
+END
+loading_sprite.png
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/front/!svn/ver/7330/vip_web/trunk/public/src/components/Loader/loading_sprite.png
+END
+loading_sprite_white.png
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/front/!svn/ver/7330/vip_web/trunk/public/src/components/Loader/loading_sprite_white.png
+END
+loading.scss
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/front/!svn/ver/7330/vip_web/trunk/public/src/components/Loader/loading.scss
+END

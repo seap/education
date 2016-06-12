@@ -168,17 +168,25 @@ router.get('/redirect', async (req, res) => {
     // 通过code换取网页授权access_token
     let response = await fetch(`https://api.weixin.qq.com/sns/oauth2/access_token?appid=${config.appId}&secret=${config.appSecret}&code=${req.query.code}&grant_type=authorization_code`);
     let json = await response.json();
-    const openId = json.openid;
+    const { openid, access_token } = json;
+    // 拉取用户信息
+    response = await fetch(`https://api.weixin.qq.com/sns/userinfo?access_token=${access_token}&openid=${openid}&lang=zh_CN`);
+    json = await response.json();
+    const { nickname } = json;
     // 判断用户是否绑定
-    response = await fetch(`${config.baseUrl}/webservice/account/is_binding?openId=${openId}`);
+    response = await fetch(`${config.baseUrl}/webservice/account/is_binding?openId=${openid}`);
     json = await response.json();
 
     if (json.errno === 0) {
       // 已绑定
+      res.cookie('openid', openid, { expires: new Date(Date.now() + 900000000) });
+      res.cookie('nickname', nickname, { expires: new Date(Date.now() + 900000000) });
       res.redirect(req.cookies.referer || config.baseUrl);
+
     } else if (json.errno === 1) {
       // 未绑定，跳转绑定页面
-      res.cookie('openid', openId, { expires: new Date(Date.now() + 900000) });
+      res.cookie('openid', openid, { expires: new Date(Date.now() + 900000000) });
+      res.cookie('nickname', nickname, { expires: new Date(Date.now() + 900000000) });
       res.redirect('/bind');
     } else {
       res.end(json.errmsg || '未知错误');

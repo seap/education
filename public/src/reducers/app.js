@@ -3,8 +3,11 @@ import * as ActionTypes from '../constants/actionTypes';
 const initialState = {
   isFetching: false,
   message: null,
+  bindSuccess: false,
   myClasses: [],
-  currentTask: null
+  currentTask: null,
+  isRecording: false,
+  localRecordList: []
 };
 export default function app(state = initialState, action) {
 
@@ -15,6 +18,8 @@ export default function app(state = initialState, action) {
       return Object.assign({}, state, {message: null});
     case ActionTypes.ACTION_FETCH_REQUEST:
       return Object.assign({}, state, {isFetching: true});
+    case ActionTypes.ACTION_BINDING_SUCCESS:
+      return Object.assign({}, state, {isFetching: false, message: '绑定成功！', bindSuccess: true});
 
     case ActionTypes.ACTION_MY_CLASS_LOADED:
       return Object.assign({}, state, {myClasses: action.classes});
@@ -29,6 +34,10 @@ export default function app(state = initialState, action) {
 
     case ActionTypes.ACTION_TASK_DETAIL_LOADED:
       return Object.assign({}, state, {currentTask: action.task});
+
+    case ActionTypes.ACTION_TASK_RECORD_COMPLETE:
+      state.localRecordList.push(action.localId);
+      return Object.assign({}, state);
     default:
       return state;
   }

@@ -13,6 +13,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
+import Loader from '../../components/Loader';
 
 const style = {
   container: {
@@ -63,6 +64,11 @@ class UserBinding extends Component {
 
   handleClose = () => {
     const { confirmMessage } = this.props.actions;
+    const { bindSuccess } = this.props.value.app;
+    if (bindSuccess) {
+      // refer页面
+      window.location.href = 'http://w.siline.cn/task/list';
+    }
     confirmMessage();
   }
 
@@ -77,20 +83,23 @@ class UserBinding extends Component {
          <div style={style.bindForm} >
          <TextField
            id="studentId"
-           hintText="学号"
+           hintText="请输入学号"
+           floatingLabelText="学号"
            value={this.state.studentId}
            onChange={this.handleChange}
            fullWidth={true} />
          <TextField
            id="password"
-           hintText="密码"
+           hintText="请输入密码"
+           floatingLabelText="密码"
            value={this.state.password}
            onChange={this.handleChange}
            type="password"
            fullWidth={true} />
          <TextField
           id="remark"
-          hintText="备注"
+          hintText="请输入备注"
+          floatingLabelText="备注"
           value={this.state.remark}
           onChange={this.handleChange}
           fullWidth={true} />
@@ -136,17 +145,10 @@ class UserBinding extends Component {
   }
 
   renderLoading() {
-    if (this.props.value.app.isFetching) {
-      return (
-        <RefreshIndicator
-           size={40}
-           left={-20}
-           top={10}
-           status="loading"
-           style={style.refresh}
-         />
-      );
-    }
+    const { isFetching } = this.props.value.app;
+    return (
+      <Loader visible={ isFetching } />
+    );
   }
 }
 

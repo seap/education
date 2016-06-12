@@ -26,6 +26,12 @@ export function fetchRequest() {
   }
 }
 
+// 绑定成功
+export function bindSuccess() {
+  return {
+    type: ActionTypes.ACTION_BINDING_SUCCESS
+  }
+}
 // 注册
 export function register(data) {
   return async (dispatch, getState) => {
@@ -67,8 +73,19 @@ export function bind(data) {
     // if (!data.remark) {
     //   return dispatch(sendMessage('请输入备注！'));
     // }
+    const openid = Cookies.get('openid');
+    const nickname = Cookies.get('nickname');
     dispatch(fetchRequest());
-    //return dispatch(sendMessage('服务异常！'));
+    try {
+      let response = await fetch(`/webservice/account/bind?studentNo=${data.studentId}&password=${data.password}&remark=${data.remark}&openId=${openid}&nickname=${nickname}`);
+      let json = await response.json();
+      if (json.errno != 0) {
+        return dispatch(sendMessage(json.errmsg));
+      }
+      dispatch(bindSuccess());
+    } catch (e) {
+      return dispatch(sendMessage('服务异常'));
+    }
   }
 }
 
@@ -76,11 +93,9 @@ export function wxConfig() {
   return async (dispatch, getState) => {
     try {
       await fetch(`/wechat/token`);
-      alert(window.location.href);
-      // let response = await fetch(`/wechat/signature?url=${encodeURIComponent(window.location.href)}`);
-      let response = await fetch(`/wechat/signature?url=${encodeURIComponent('http://w.siline.cn/task/list')}`);
+      let response = await fetch(`/wechat/signature?url=${encodeURIComponent(window.location.href)}`);
+      //let response = await fetch(`/wechat/signature?url=${encodeURIComponent('http://w.siline.cn/task/list')}`);
       let json = await response.json();
-      alert('url: ', json.url);
 
       wx.config({
         debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -100,10 +115,22 @@ export function wxConfig() {
   }
 }
 
+function addLocalRecord(localId) {
+  return {
+    type: ActionTypes.ACTION_TASK_RECORD_COMPLETE,
+    localId
+  }
+}
 // 开始录音
 export function startRecord() {
   return (dispatch, getState) => {
     wx && wx.startRecord();
+    wx.onVoiceRecordEnd({
+      // 录音时间超过一分钟没有停止的时候会执行 complete 回调
+      complete: function (res) {
+          var localId = res.localId;
+      }
+    });
   };
 }
 
@@ -113,8 +140,8 @@ export function stopRecord() {
     wx && wx.stopRecord({
       success: function (res) {
         console.log('stop successed, res', res);
+        dispatch(addLocalRecord(res.localId));
         wx.playVoice(res);
-        console.log('playing...');
       }
     });
   }

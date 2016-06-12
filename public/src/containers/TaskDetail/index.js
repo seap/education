@@ -68,8 +68,12 @@ class TaskDetail extends Component {
 
   }
 
+  touchLocalRecord = (event) => {
+    console.log(event.target);
+  }
+
   renderTaskDetail() {
-    const { currentTask } = this.props.value.app;
+    const { currentTask, localRecordList } = this.props.value.app;
     console.log('currentTask ', currentTask);
     if (currentTask) {
       return (
@@ -87,7 +91,11 @@ class TaskDetail extends Component {
             <Subheader>我的语音作业</Subheader>
             <ListItem primaryText="59''" leftIcon={<IconHearing />} rightIconButton={<FlatButton style={{height:48}} icon={<IconClear />} />} />
             <ListItem primaryText="30''" leftIcon={<IconHearing />} rightIconButton={<FlatButton style={{height:48}} icon={<IconClear />} />} />
-
+            { localRecordList.map((e)=>
+              <ListItem primaryText={e}
+                leftIcon={<IconHearing />}
+                onTouchTap={this.touchLocalRecord}
+                rightIconButton={<FlatButton style={{height:48}} icon={<IconClear />} />} /> )}
           </List>
           <CardActions style={{textAlign: 'center'}}>
             <RaisedButton
