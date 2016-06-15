@@ -82,6 +82,8 @@ export function bind(data) {
       if (json.errno != 0) {
         return dispatch(sendMessage(json.errmsg));
       }
+      // 绑定成功
+      Cookies.set('studentid', data.studentId);
       dispatch(bindSuccess());
     } catch (e) {
       return dispatch(sendMessage('服务异常'));
@@ -217,6 +219,46 @@ export function fetchTaskDetail(params) {
       }
 
       dispatch(taskDetailLoaded(json.data));
+    } catch (e) {
+      console.log(e);
+    }
+  }
+}
+
+//查询个人信息
+export function fetchMyInfo() {
+  return async (dispatch, getState) => {
+
+    try {
+      let response = await fetch(`/webservice/student/self_info?openId=oUoJLv6jTegVkkRhXBnhq5XSvvBQ`);
+      let json = await response.json();
+      if (json.errno !== 0 && json.data) {
+        return dispatch(sendMessage(json.errmsg));
+      }
+      dispatch({
+        type: ActionTypes.ACTION_MY_INFO_LOAD,
+        payload: json.data
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+}
+
+
+//查询已激活班级
+export function fetchClassList() {
+  return async (dispatch, getState) => {
+    try {
+      let response = await fetch(`/webservice/clazz/query_clazz`);
+      let json = await response.json();
+      if (json.errno !== 0 && json.data) {
+        return dispatch(sendMessage(json.errmsg));
+      }
+      dispatch({
+        type: ActionTypes.ACTION_CLASS_LIST_LOAD,
+        payload: json.data
+      });
     } catch (e) {
       console.log(e);
     }

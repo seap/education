@@ -20,6 +20,14 @@ function routes(store){
     }
   };
 
+  //付款
+  const payment = {
+    path: '/payment',
+    getComponent(location, callback) {
+      require.ensure([], require => callback(null, require('./containers/Payment').default));
+    }
+  };
+
   //我的作业
   const taskList = {
     path: '/task/list',
@@ -51,7 +59,7 @@ function routes(store){
     getIndexRoute(location, callback) {
       require.ensure([], require => callback(null, {component: require('./containers/Login').default}));
     },
-    childRoutes: [bind, register, taskList, taskDetail, notFoundPage]
+    childRoutes: [bind, register, payment, taskList, taskDetail, notFoundPage]
   };
 
   return rootRoute;
