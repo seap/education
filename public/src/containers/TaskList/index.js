@@ -38,6 +38,7 @@ class TaskList extends Component {
     super();
     this.myTasks = null;
     this.state = {
+      classIndex: 0,
       currentClass: null
     }
   }
@@ -48,12 +49,12 @@ class TaskList extends Component {
   }
 
   handleClassChange = (event, index, value) => this.setState({
-    currentClass: value
+    classIndex: index
   });
 
   renderMyClasses() {
     const { myClasses } = this.props.value.app;
-    if (myClasses) {
+    if (myClasses && myClasses.length > 0) {
       const classList = myClasses.map((clazz, index) =>
         <MenuItem key={index} value={clazz.clazz_id} primaryText={clazz.clazz_name} />
       );
@@ -62,12 +63,19 @@ class TaskList extends Component {
         <div>
         当前班级
         <DropDownMenu
-          value={this.state.currentClass}
+          value={myClasses[this.state.classIndex].clazz_id}
           onChange={this.handleClassChange}>
           {classList}
         </DropDownMenu>
         </div>
       );
+    } else {
+      // 无班级列表
+      return (
+        <div style={{textAlign: 'center', margin: 20}}>
+        没有您的班级信息！
+        </div>
+      )
     }
 
   }
