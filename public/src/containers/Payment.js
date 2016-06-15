@@ -105,6 +105,13 @@ class Payment extends Component {
          value={classList[this.state.clazzIndex].cost}
          disabled={true}
          fullWidth={true} />
+         <RaisedButton
+           id="bind"
+           label="付款"
+           style={{width:180}}
+           onTouchTap={this.handleSubmit}
+           primary={true}
+           fullWidth={true} />
          </div>
       )
     }
@@ -118,15 +125,6 @@ class Payment extends Component {
            title="学生付款"
          />
          {this.renderMyInfo()}
-         <div style={style.bindForm} >
-          <RaisedButton
-            id="bind"
-            label="付款"
-            style={{width:180}}
-            onTouchTap={this.handleSubmit}
-            primary={true}
-            fullWidth={true} />
-         </div>
          {this.renderDialog()}
          {this.renderLoading()}
          </div>
