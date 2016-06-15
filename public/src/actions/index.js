@@ -231,7 +231,7 @@ export function fetchMyInfo() {
     const openId = Cookies.get('openid');
     if (!openId) {
       //未绑定登录
-      return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
+      return dispatch(push(`/wechat/login?referer=${encodeURIComponent(window.location.href)}`));
     }
     try {
       let response = await fetch(`/webservice/student/self_info?openId=${openId}`);
