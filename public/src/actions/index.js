@@ -205,12 +205,12 @@ function taskDetailLoaded(task) {
 
 export function fetchTaskDetail(params) {
   return async (dispatch, getState) => {
-    // const openId = Cookies.get('openid');
-    // if (!openId) {
-    //   //未绑定登录
-    //   return dispatch(push(`/wechat/login?referer=${encodeURIComponent(window.location.href)}`));
-    // }
-    const openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    const openId = Cookies.get('openid');
+    if (!openId) {
+      //未绑定登录
+      return dispatch(push(`/wechat/login?referer=${encodeURIComponent(window.location.href)}`));
+    }
+    // const openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
     try {
       let response = await fetch(`/webservice/student/query_task_info?openId=${openId}&taskId=${params.taskId}`);
       let json = await response.json();
