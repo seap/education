@@ -208,7 +208,7 @@ export function fetchTaskDetail(params) {
     // const openId = Cookies.get('openid');
     // if (!openId) {
     //   //未绑定登录
-    //   return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
+    //   return dispatch(push(`/wechat/login?referer=${encodeURIComponent(window.location.href)}`));
     // }
     const openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
     try {

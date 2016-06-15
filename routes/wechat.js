@@ -160,6 +160,7 @@ router.get('/login', (req, res) => {
         let redirectUrl = encodeURIComponent(config.redirectUrl);
         return res.redirect(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=${config.appId}&redirect_uri=${redirectUrl}&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect`);
     }
+    return res.json('only support wechat');
 });
 
 //微信跳转, /wechat/redirect?code=021rUtAa2OqSlC0Cs3Ba2NPtAa2rUtA3&state=1
