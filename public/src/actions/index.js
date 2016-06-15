@@ -228,9 +228,13 @@ export function fetchTaskDetail(params) {
 //查询个人信息
 export function fetchMyInfo() {
   return async (dispatch, getState) => {
-
+    const openId = Cookies.get('openid');
+    if (!openId) {
+      //未绑定登录
+      return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
+    }
     try {
-      let response = await fetch(`/webservice/student/self_info?openId=oUoJLv6jTegVkkRhXBnhq5XSvvBQ`);
+      let response = await fetch(`/webservice/student/self_info?openId=${openId}`);
       let json = await response.json();
       if (json.errno !== 0 && json.data) {
         return dispatch(sendMessage(json.errmsg));
