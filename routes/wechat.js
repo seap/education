@@ -155,8 +155,10 @@ router.get('/signature', async (req, res) => {
 //微信登录
 router.get('/login', (req, res) => {
     if (/MicroMessenger/i.test(req.get('User-Agent'))) {
-        let referer = decodeURIComponent(req.query.referer)||req.cookies.referer;
-        res.cookie('referer', referer, {domain:res.locals.domain});
+        let referer = req.query.referer || req.cookies.referer;
+        if (referer) {
+          res.cookie('referer', decodeURIComponent(referer), {domain:res.locals.domain});
+        }
         let redirectUrl = encodeURIComponent(config.redirectUrl);
         return res.redirect(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=${config.appId}&redirect_uri=${redirectUrl}&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect`);
     }
@@ -182,6 +184,7 @@ router.get('/redirect', async (req, res) => {
       // 已绑定
       res.cookie('openid', openid, { expires: new Date(Date.now() + 900000000) });
       res.cookie('nickname', nickname, { expires: new Date(Date.now() + 900000000) });
+      console.log('refer: ', req.cookies.referer);
       res.redirect(req.cookies.referer || config.baseUrl);
 
     } else if (json.errno === 1) {
@@ -194,7 +197,7 @@ router.get('/redirect', async (req, res) => {
     }
   } catch (e) {
     console.log(e);
-    res.json('false');
+    res.json('server error.');
   }
 
 });
