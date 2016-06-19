@@ -6,7 +6,7 @@ const initialState = {
   bindSuccess: false,
   myInfo:null,
   classList: [], //所有可支付班级
-  myClasses: [],
+  myClasses: null,
   currentTask: null,
   isRecording: false,
   localRecordList: []
