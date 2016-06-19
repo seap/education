@@ -385,6 +385,37 @@ export function fetchStuffList() {
   }
 }
 
+//查询材料详情
+export function fetchStuffDetail(params) {
+  return async (dispatch, getState) => {
+    if (getState().app.isFetching) {
+      return;
+    }
+    let openId = Cookies.get('openid');
+    if (__DEVELOPMENT__) {
+      openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    }
+    if (!openId) {
+      //未绑定登录
+      return dispatch(push(`/wechat/login?referer=${encodeURIComponent(window.location.href)}`));
+    }
+    dispatch(fetchRequest());
+    try {
+      let response = await fetch(`/webservice/student/query_stuff_info?openId=${openId}&stuffId=${params.stuffId}`);
+      let json = await response.json();
+      if (json.errno !== 0 && json.data) {
+        return dispatch(sendMessage(json.errmsg));
+      }
+      dispatch({
+        type: ActionTypes.ACTION_STUFF_DETAIL,
+        payload: json.data
+      });
+    } catch (e) {
+      dispatch(sendMessage('网络服务异常！'));
+    }
+  }
+}
+
 
 //查询通知列表
 export function fetchNoticeList() {

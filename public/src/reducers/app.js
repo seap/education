@@ -54,6 +54,8 @@ export default function app(state = initialState, action) {
         record.localId != action.record.localId
       );
       return Object.assign({}, state, {localRecordList});
+    case ActionTypes.ACTION_STUFF_DETAIL:
+      return Object.assign({}, state, {stuff: action.payload, isFetching: false });
     default:
       return state;
   }

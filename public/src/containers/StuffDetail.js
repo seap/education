@@ -6,90 +6,42 @@ import * as IndexActions from '../actions';
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import AppBar from 'material-ui/AppBar';
 import {List, ListItem} from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
 
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
+import {Card, CardHeader} from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
-import CircularProgress from 'material-ui/CircularProgress';
 
-import IconMic from 'material-ui/svg-icons/av/mic';
-import IconMicOff from 'material-ui/svg-icons/av/mic-off';
-import IconHearing from 'material-ui/svg-icons/av/hearing';
-import IconClear from 'material-ui/svg-icons/content/clear';
-import IconSave from 'material-ui/svg-icons/file/cloud-done';
-import IconSubmit from 'material-ui/svg-icons/file/cloud-upload';
+import IconPDF from 'material-ui/svg-icons/image/picture-as-pdf';
 
 import Loader from '../components/Loader';
 import TitleRefresh from '../components/TitleRefresh';
 
-class WriteonDetail extends Component {
+class StuffDetail extends Component {
   constructor() {
     super();
   }
 
   componentDidMount() {
-    const { fetchWriteonDetail, wxConfig} = this.props.actions;
-    wxConfig && wxConfig();
-    fetchWriteonDetail && fetchWriteonDetail(this.props.params);
+    const { fetchStuffDetail } = this.props.actions;
+    fetchStuffDetail && fetchStuffDetail(this.props.params);
   }
 
-  renderWriteonDetail() {
-    const { isRecording, currentTask, localRecordList } = this.props.value.app;
-    const { startRecord, stopRecord, playRecord, deleteRecord } = this.props.actions;
-    console.log('currentTask ', currentTask);
-    if (currentTask) {
+  renderStuffDetail() {
+    const { stuff } = this.props.value.app;
+    if (stuff) {
       return (
         <Card>
           <CardHeader
-            title={currentTask.task_name}
+            title={stuff.stuff_name}
             subtitle="2016-05-29"
           />
-          <CardText>
-            {currentTask.task_content}
-          </CardText>
           <Divider />
-
           <List>
-            <Subheader>我的语音作业</Subheader>
-            { localRecordList.map((e, index) =>
-              <ListItem key={index} primaryText={e.name}
-                leftIcon={<IconHearing />}
-                onTouchTap={() => playRecord(e)}
-                rightIconButton={<FlatButton style={{height:48}} icon={<IconClear />} onClick={() => deleteRecord(e)} />} /> )}
+            { stuff.stuff_attach.map((e, index) =>
+              <a key={index} href={e.attach_url} ><ListItem key={index} primaryText={e.attach_name}
+                leftIcon={<IconPDF />}
+              /></a> )}
           </List>
-          <CardActions style={{textAlign: 'center'}}>
-            <RaisedButton
-              label="开始录音"
-              icon={<IconMic />}
-              disabled={isRecording}
-              onClick={startRecord}
-              primary={true} />
-            <RaisedButton
-              label="结束录音"
-              icon={<IconMicOff />}
-              disabled={!isRecording}
-              onClick={stopRecord}
-              primary={true} />
-          </CardActions>
-
-          <Divider />
-          <CardActions style={{textAlign: 'center'}}>
-            <RaisedButton
-              label="保存作业"
-              icon={<IconSave />}
-              onClick={this.saveTask}
-              primary={true} />
-            <RaisedButton
-              label="提交作业"
-              icon={<IconSubmit />}
-              onClick={this.submitTask}
-              primary={true} />
-          </CardActions>
-
         </Card>
       );
     }
@@ -105,10 +57,10 @@ class WriteonDetail extends Component {
   render() {
     return (
       <div>
-      <Helmet title="板书详情" />
+      <Helmet title="辅导材料" />
         <MuiThemeProvider muiTheme={ getMuiTheme({userAgent: this.props.value.userAgent}) }>
         <div>
-          {this.renderWriteonDetail()}
+          {this.renderStuffDetail()}
         </div>
         </MuiThemeProvider>
         <TitleRefresh />
@@ -118,7 +70,7 @@ class WriteonDetail extends Component {
   }
 }
 
-WriteonDetail.propTypes = {
+StuffDetail.propTypes = {
 };
 
 const mapStateToProps = state => ({ value: state });
@@ -127,4 +79,4 @@ const mapDispatchToProps = dispatch => (
   { actions: bindActionCreators(IndexActions, dispatch) }
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(WriteonDetail);
+export default connect(mapStateToProps, mapDispatchToProps)(StuffDetail);
