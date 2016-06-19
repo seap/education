@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import Helmet from 'react-helmet';
-import * as IndexActions from '../../actions';
+import * as IndexActions from '../actions';
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -11,28 +11,21 @@ import AppBar from 'material-ui/AppBar';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import {Tabs, Tab} from 'material-ui/Tabs';
 import {List, ListItem} from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
-import Subheader from 'material-ui/Subheader';
-import IconCreate from 'material-ui/svg-icons/content/create';
-import IconDone from 'material-ui/svg-icons/action/done';
+import IconCreate from 'material-ui/svg-icons/image/navigate-next';
 
 import Divider from 'material-ui/Divider';
 import FileFolder from 'material-ui/svg-icons/file/folder';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
-import {blue500, yellow500, grey500} from 'material-ui/styles/colors';
-import EditorInsertChart from 'material-ui/svg-icons/editor/insert-chart';
-
-import Slider from 'material-ui/Slider';
-import styles from './main.scss';
+import {grey500} from 'material-ui/styles/colors';
 
 import DropDownMenu from 'material-ui/DropDownMenu';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-import Loader from '../../components/Loader';
+import Loader from '../components/Loader';
 
-import { dateFormat } from '../../common/js/utility';
+import { dateFormat } from '../common/js/utility';
 
 const style = {
   infoContainer: {
@@ -41,19 +34,18 @@ const style = {
   }
 };
 
-class TaskList extends Component {
+class StuffList extends Component {
   constructor() {
     super();
-    this.myTasks = null;
+    this.currentClass = null;
     this.state = {
-      classIndex: 0,
-      currentClass: null
+      classIndex: 0
     }
   }
 
   componentDidMount() {
-    const { fetchAllMyTasks } = this.props.actions;
-    fetchAllMyTasks && fetchAllMyTasks();
+    const { fetchStuffList } = this.props.actions;
+    fetchStuffList && fetchStuffList();
   }
 
   handleClassChange = (event, index, value) => this.setState({
@@ -85,46 +77,21 @@ class TaskList extends Component {
         </div>
       )
     }
-
   }
-  // 渲染已批改作业
-  renderCompletedTasks() {
-    if (this.currentClass && this.currentClass.tasks) {
-      let completedTasks = this.currentClass.tasks.filter((task)=>task.status === 'compl');
-      if (completedTasks.length > 0) {
-        return completedTasks.map((task, index) =>
-          <Link key={index} to={`/task/detail/${task.task_id}`}>
+
+  // 渲染列表
+  renderStuffList() {
+    if (this.currentClass && this.currentClass.stuffs) {
+      let currentList = this.currentClass.stuffs;
+      if (currentList.length > 0) {
+        return currentList.map((stuff, index) =>
+          <Link key={index} to={`/stuff/detail/${stuff.stuff_id}`}>
           <ListItem
             key={index}
             leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={grey500} />}
-            rightIcon={<IconDone />}
-            primaryText={task.task_name}
-            secondaryText={dateFormat(new Date(parseInt(task.create_date)*1000), 'yyyy-MM-dd')}
-          />
-          </Link>
-        )
-      }
-    }
-    return (
-      <div style={style.infoContainer}>
-        没有已批改的作业！
-      </div>
-    );
-  }
-
-  // 渲染当前作业
-  renderCurrentTasks() {
-    if (this.currentClass && this.currentClass.tasks) {
-      let currentTasks = this.currentClass.tasks.filter((task)=>task.status !== 'compl');
-      if (currentTasks.length > 0) {
-        return currentTasks.map((task, index) =>
-          <Link key={index} to={`/task/detail/${task.task_id}`}>
-          <ListItem
-            key={index}
-            leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={task.status === 'nocom' ? blue500 : yellow500} />}
             rightIcon={<IconCreate />}
-            primaryText={task.task_name}
-            secondaryText={dateFormat(new Date(parseInt(task.create_date)*1000), 'yyyy-MM-dd')}
+            primaryText={stuff.stuff_name}
+            secondaryText={dateFormat(new Date(parseInt(stuff.create_date)*1000), 'yyyy-MM-dd')}
           />
           </Link>
         )
@@ -132,7 +99,7 @@ class TaskList extends Component {
     }
     return (
       <div style={style.infoContainer}>
-        没有当前作业！
+        当前没有辅导材料！
       </div>
     );
   }
@@ -149,23 +116,14 @@ class TaskList extends Component {
     this.currentClass = myClasses[this.state.classIndex];
     return (
       <div>
-        <Helmet title="我的作业" />
+        <Helmet title="辅导材料" />
         <MuiThemeProvider muiTheme={ getMuiTheme({userAgent: this.props.value.userAgent}) }>
         <div>
-          <AppBar title="我的作业" />
+          <AppBar title="辅导材料" />
           {this.renderMyClasses()}
-          <Tabs>
-          <Tab label="当前作业" >
-            <div>
-            <List>
-              {this.renderCurrentTasks()}
-            </List>
-            </div>
-          </Tab>
-          <Tab label="已批改作业" >
-            {this.renderCompletedTasks()}
-          </Tab>
-        </Tabs>
+          <List>
+          {this.renderStuffList()}
+          </List>
         </div>
         </MuiThemeProvider>
         {this.renderLoading()}
@@ -174,7 +132,7 @@ class TaskList extends Component {
   }
 }
 
-TaskList.propTypes = {
+StuffList.propTypes = {
 };
 
 const mapStateToProps = state => ({ value: state });
@@ -183,4 +141,4 @@ const mapDispatchToProps = dispatch => (
   { actions: bindActionCreators(IndexActions, dispatch) }
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskList);
+export default connect(mapStateToProps, mapDispatchToProps)(StuffList);

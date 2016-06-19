@@ -255,7 +255,7 @@ export function fetchTaskDetail(params) {
       }
       dispatch(taskDetailLoaded(json.data));
     } catch (e) {
-      console.log(e);
+      dispatch(sendMessage('网络服务异常！'));
     }
   }
 }
@@ -263,7 +263,10 @@ export function fetchTaskDetail(params) {
 //查询个人信息
 export function fetchMyInfo() {
   return async (dispatch, getState) => {
-    const openId = Cookies.get('openid');
+    let openId = Cookies.get('openid');
+    if (__DEVELOPMENT__) {
+      openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    }
     if (!openId) {
       //未绑定登录
       return dispatch(push(`/wechat/login?referer=${encodeURIComponent(window.location.href)}`));
@@ -279,7 +282,7 @@ export function fetchMyInfo() {
         payload: json.data
       });
     } catch (e) {
-      console.log(e);
+      dispatch(sendMessage('网络服务异常！'));
     }
   }
 }
@@ -299,7 +302,125 @@ export function fetchClassList() {
         payload: json.data
       });
     } catch (e) {
-      console.log(e);
+      dispatch(sendMessage('网络服务异常！'));
+    }
+  }
+}
+
+//查询板书列表
+export function fetchWriteonList() {
+  return async (dispatch, getState) => {
+    if (getState().app.isFetching) {
+      return;
+    }
+    let openId = Cookies.get('openid');
+    if (__DEVELOPMENT__) {
+      openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    }
+    if (!openId) {
+      //未绑定登录
+      return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
+    }
+    dispatch(fetchRequest());
+    try {
+      let response = await fetch(`/webservice/student/query_clazz?openId=${openId}`);
+      let json = await response.json();
+      if (json.errno !== 0 && json.data) {
+        return dispatch(sendMessage(json.errmsg));
+      }
+
+      let myClasses = json.data;
+      for (let i = 0; i < myClasses.length; i++) {
+        response = await fetch(`/webservice/student/query_writeon?openId=${openId}&classId=${myClasses[i].clazz_id}`);
+        json = await response.json();
+        if (json.errno === 0) {
+          myClasses[i].writeons = json.data
+        }
+      }
+      dispatch(allMyTaskLoaded(myClasses));
+    } catch (e) {
+      dispatch(sendMessage('网络服务异常！'));
+    }
+
+  }
+}
+
+//查询板书列表
+export function fetchStuffList() {
+  return async (dispatch, getState) => {
+    if (getState().app.isFetching) {
+      return;
+    }
+    let openId = Cookies.get('openid');
+    if (__DEVELOPMENT__) {
+      openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    }
+    if (!openId) {
+      //未绑定登录
+      return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
+    }
+    dispatch(fetchRequest());
+    try {
+      let response = await fetch(`/webservice/student/query_clazz?openId=${openId}`);
+      let json = await response.json();
+      if (json.errno !== 0 && json.data) {
+        return dispatch(sendMessage(json.errmsg));
+      }
+
+      let myClasses = json.data;
+      for (let i = 0; i < myClasses.length; i++) {
+        response = await fetch(`/webservice/student/query_stuff?openId=${openId}&classId=${myClasses[i].clazz_id}`);
+        json = await response.json();
+        if (json.errno === 0) {
+          myClasses[i].stuffs = json.data
+        } else {
+          return dispatch(sendMessage(json.errmsg));
+        }
+      }
+      dispatch(allMyTaskLoaded(myClasses));
+    } catch (e) {
+      dispatch(sendMessage('网络服务异常！'));
+    }
+
+  }
+}
+
+
+//查询通知列表
+export function fetchNoticeList() {
+  return async (dispatch, getState) => {
+    if (getState().app.isFetching) {
+      return;
+    }
+    let openId = Cookies.get('openid');
+    if (__DEVELOPMENT__) {
+      openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    }
+    if (!openId) {
+      //未绑定登录
+      return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
+    }
+    dispatch(fetchRequest());
+    try {
+      let response = await fetch(`/webservice/student/query_clazz?openId=${openId}`);
+      let json = await response.json();
+      if (json.errno !== 0 && json.data) {
+        return dispatch(sendMessage(json.errmsg));
+      }
+
+      let myClasses = json.data;
+      for (let i = 0; i < myClasses.length; i++) {
+        response = await fetch(`/webservice/clazz/query_clazz_notice?openId=${openId}&clazzId=${myClasses[i].clazz_id}`);
+        json = await response.json();
+        if (json.errno === 0) {
+          myClasses[i].notices = json.data
+        } else {
+          return dispatch(sendMessage(json.errmsg));
+        }
+      }
+      dispatch(allMyTaskLoaded(myClasses));
+    } catch (e) {
+      dispatch(sendMessage('网络服务异常！'));
     }
   }
 }

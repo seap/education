@@ -45,13 +45,61 @@ function routes(store){
     }
   };
 
+  //板书列表
+  const writeonList = {
+    path: '/writeon/list',
+    getComponent(location, callback) {
+      require.ensure([], require => callback(null, require('./containers/WriteonList').default));
+    }
+  };
+
+  //板书详情
+  const writeonDetail = {
+    path: '/writeon/detail/:writeonId',
+    getComponent(location, callback) {
+      require.ensure([], require => callback(null, require('./containers/WriteonDetail').default));
+    }
+  };
+
+  //辅导材料列表
+  const stuffList = {
+    path: '/stuff/list',
+    getComponent(location, callback) {
+      require.ensure([], require => callback(null, require('./containers/StuffList').default));
+    }
+  };
+
+  //辅导材料详情
+  const stuffDetail = {
+    path: '/stuff/detail/:stuffId',
+    getComponent(location, callback) {
+      require.ensure([], require => callback(null, require('./containers/StuffDetail').default));
+    }
+  };
+
+  //公告列表
+  const noticeList = {
+    path: '/notice/list',
+    getComponent(location, callback) {
+      require.ensure([], require => callback(null, require('./containers/NoticeList').default));
+    }
+  };
+
+  //公告详情
+  const noticeDetail = {
+    path: '/notice/detail/:classId/:noticeId',
+    getComponent(location, callback) {
+      require.ensure([], require => callback(null, require('./containers/NoticeDetail').default));
+    }
+  };
+
   // 404
   const notFoundPage = {
     path: '*',
     getComponent(location, callback) {
       require.ensure([], require => callback(null, require('./containers/NotFoundPage').default));
     }
-  }
+  };
 
   // 路由根目录
   const rootRoute = {
@@ -60,7 +108,7 @@ function routes(store){
     getIndexRoute(location, callback) {
       require.ensure([], require => callback(null, {component: require('./containers/Login').default}));
     },
-    childRoutes: [bind, register, payment, taskList, taskDetail, notFoundPage]
+    childRoutes: [bind, register, payment, taskList, taskDetail, writeonList, writeonDetail, stuffList, stuffDetail, noticeList, noticeDetail, notFoundPage]
   };
 
   return rootRoute;
