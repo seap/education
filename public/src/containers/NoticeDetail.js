@@ -6,22 +6,7 @@ import * as IndexActions from '../actions';
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import AppBar from 'material-ui/AppBar';
-import {List, ListItem} from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
-
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
-import Divider from 'material-ui/Divider';
-import CircularProgress from 'material-ui/CircularProgress';
-
-import IconMic from 'material-ui/svg-icons/av/mic';
-import IconMicOff from 'material-ui/svg-icons/av/mic-off';
-import IconHearing from 'material-ui/svg-icons/av/hearing';
-import IconClear from 'material-ui/svg-icons/content/clear';
-import IconSave from 'material-ui/svg-icons/file/cloud-done';
-import IconSubmit from 'material-ui/svg-icons/file/cloud-upload';
+import {Card, CardHeader, CardTitle, CardText} from 'material-ui/Card';
 
 import Loader from '../components/Loader';
 import TitleRefresh from '../components/TitleRefresh';
@@ -33,7 +18,6 @@ class NoticeDetail extends Component {
   }
 
   componentDidMount() {
-
   }
 
   renderNoticeDetail() {
