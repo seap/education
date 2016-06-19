@@ -184,12 +184,16 @@ function allMyTaskLoaded(tasks) {
 export function fetchAllMyTasks() {
 
   return async (dispatch, getState) => {
+    if (getState().app.isFetching) {
+      return;
+    }
     // const openId = Cookies.get('openid');
     // if (!openId) {
     //   //未绑定登录
     //   return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
     // }
     const openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    dispatch(fetchRequest());
     try {
       let response = await fetch(`/webservice/student/query_clazz?openId=${openId}`);
       let json = await response.json();
