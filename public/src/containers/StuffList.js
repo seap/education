@@ -54,7 +54,11 @@ class StuffList extends Component {
 
   renderMyClasses() {
     const { myClasses } = this.props.value.app;
-    if (myClasses && myClasses.length > 0) {
+    if (!myClasses) {
+      return;
+    }
+    if (myClasses.length > 0) {
+      this.currentClass = myClasses[this.state.classIndex];
       const classList = myClasses.map((clazz, index) =>
         <MenuItem key={index} value={clazz.clazz_id} primaryText={clazz.clazz_name} />
       );
@@ -95,13 +99,14 @@ class StuffList extends Component {
           />
           </Link>
         )
+      } else {
+        return (
+          <div style={style.infoContainer}>
+            当前没有辅导材料！
+          </div>
+        );
       }
     }
-    return (
-      <div style={style.infoContainer}>
-        当前没有辅导材料！
-      </div>
-    );
   }
 
   renderLoading() {
@@ -112,10 +117,6 @@ class StuffList extends Component {
   }
 
   render() {
-    const { myClasses } = this.props.value.app;
-    if (myClasses) {
-      this.currentClass = myClasses[this.state.classIndex];
-    }
     return (
       <div>
         <Helmet title="辅导材料" />
