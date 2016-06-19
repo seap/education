@@ -3,6 +3,8 @@ import Cookies from 'js-cookie';
 import { push } from 'react-router-redux';
 import * as ActionTypes from '../constants/actionTypes';
 
+import { dateFormat } from '../common/js/utility';
+
 // 发送消息
 export function sendMessage(message) {
   message = message || '服务异常';
@@ -117,21 +119,28 @@ export function wxConfig() {
   }
 }
 
-function addLocalRecord(localId) {
+function addLocalRecord(record) {
+  record.name = dateFormat(new Date(), 'yyyy-MM-dd hh:mm:ss');
   return {
-    type: ActionTypes.ACTION_TASK_RECORD_COMPLETE,
-    localId
+    type: ActionTypes.ACTION_TASK_RECORD_STOP,
+    record
   }
 }
 // 开始录音
 export function startRecord() {
   return (dispatch, getState) => {
+    if (getState().app.isRecording) {
+      return;
+    }
     wx && wx.startRecord();
     wx.onVoiceRecordEnd({
       // 录音时间超过一分钟没有停止的时候会执行 complete 回调
       complete: function (res) {
-          var localId = res.localId;
+        dispatch(addLocalRecord(res));
       }
+    });
+    dispatch({
+      type: ActionTypes.ACTION_TASK_RECORD_START
     });
   };
 }
@@ -142,9 +151,25 @@ export function stopRecord() {
     wx && wx.stopRecord({
       success: function (res) {
         console.log('stop successed, res', res);
-        dispatch(addLocalRecord(res.localId));
-        wx.playVoice(res);
+        dispatch(addLocalRecord(res));
+        // wx.playVoice(res);
       }
+    });
+  }
+}
+
+export function playRecord(record) {
+  return (dispatch, getState) => {
+    wx && wx.playVoice(record);
+  }
+}
+
+export function deleteRecord(record) {
+  console.log(record);
+  return (dispatch, getState) => {
+    dispatch({
+      type: ActionTypes.ACTION_TASK_RECORD_DELETE,
+      record
     });
   }
 }
@@ -205,12 +230,12 @@ function taskDetailLoaded(task) {
 
 export function fetchTaskDetail(params) {
   return async (dispatch, getState) => {
-    const openId = Cookies.get('openid');
-    if (!openId) {
-      //未绑定登录
-      return dispatch(push(`/wechat/login?referer=${encodeURIComponent(window.location.href)}`));
-    }
-    // const openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    // const openId = Cookies.get('openid');
+    // if (!openId) {
+    //   //未绑定登录
+    //   return dispatch(push(`/wechat/login?referer=${encodeURIComponent(window.location.href)}`));
+    // }
+    const openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
     try {
       let response = await fetch(`/webservice/student/query_task_info?openId=${openId}&taskId=${params.taskId}`);
       let json = await response.json();

@@ -33,6 +33,13 @@ import MenuItem from 'material-ui/MenuItem';
 
 import { dateFormat } from '../../common/js/utility';
 
+const style = {
+  infoContainer: {
+    textAlign: 'center',
+    margin: 20
+  }
+};
+
 class TaskList extends Component {
   constructor() {
     super();
@@ -72,7 +79,7 @@ class TaskList extends Component {
     } else {
       // 无班级列表
       return (
-        <div style={{textAlign: 'center', margin: 20}}>
+        <div style={style.infoContainer}>
         没有您的班级信息！
         </div>
       )
@@ -81,53 +88,57 @@ class TaskList extends Component {
   }
   // 渲染已批改作业
   renderCompletedTasks() {
-    if (this.myTasks) {
-      let completedTasks = this.myTasks.filter((task)=>task.status === 'compl');
-      return completedTasks.map((task, index) =>
-        <Link to={`/task/detail/${task.task_id}`}>
-        <ListItem
-          key={task.task_id}
-          leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={grey500} />}
-          rightIcon={<IconDone />}
-          primaryText={task.task_name}
-          secondaryText={dateFormat(new Date(parseInt(task.create_date)*1000), 'yyyy-MM-dd')}
-        />
-        </Link>
-      )
+    if (this.currentClass && this.currentClass.tasks) {
+      let completedTasks = this.currentClass.tasks.filter((task)=>task.status === 'compl');
+      if (completedTasks.length > 0) {
+        return completedTasks.map((task, index) =>
+          <Link key={index} to={`/task/detail/${task.task_id}`}>
+          <ListItem
+            key={index}
+            leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={grey500} />}
+            rightIcon={<IconDone />}
+            primaryText={task.task_name}
+            secondaryText={dateFormat(new Date(parseInt(task.create_date)*1000), 'yyyy-MM-dd')}
+          />
+          </Link>
+        )
+      }
     }
+    return (
+      <div style={style.infoContainer}>
+        没有已批改的作业！
+      </div>
+    );
   }
 
   // 渲染当前作业
   renderCurrentTasks() {
-    if (this.myTasks) {
-      let currentTasks = this.myTasks.filter((task)=>task.status !== 'compl');
-      return currentTasks.map((task, index) =>
-        <Link to={`/task/detail/${task.task_id}`}>
-        <ListItem
-          key={task.task_id}
-          leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={task.status === 'nocom' ? blue500 : yellow500} />}
-          rightIcon={<IconCreate />}
-          primaryText={task.task_name}
-          secondaryText={dateFormat(new Date(parseInt(task.create_date)*1000), 'yyyy-MM-dd')}
-        />
-        </Link>
-      )
+    if (this.currentClass && this.currentClass.tasks) {
+      let currentTasks = this.currentClass.tasks.filter((task)=>task.status !== 'compl');
+      if (currentTasks.length > 0) {
+        return currentTasks.map((task, index) =>
+          <Link key={index} to={`/task/detail/${task.task_id}`}>
+          <ListItem
+            key={index}
+            leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={task.status === 'nocom' ? blue500 : yellow500} />}
+            rightIcon={<IconCreate />}
+            primaryText={task.task_name}
+            secondaryText={dateFormat(new Date(parseInt(task.create_date)*1000), 'yyyy-MM-dd')}
+          />
+          </Link>
+        )
+      }
     }
+    return (
+      <div style={style.infoContainer}>
+        没有当前作业！
+      </div>
+    );
   }
 
   render() {
     const { myClasses } = this.props.value.app;
-    if (this.state.currentClass) {
-      for (let i = 0; i < myClasses.length; i++) {
-        if (this.state.currentClass == myClasses[i].clazz_id) {
-          this.myTasks = myClasses[i].tasks;
-          break;
-        }
-      }
-    } else if (myClasses && myClasses[0]) {
-      this.state.currentClass = myClasses[0].clazz_id;
-      this.myTasks = myClasses[0].tasks;
-    }
+    this.currentClass = myClasses[this.state.classIndex];
     return (
       <div>
         <Helmet title="我的作业" />
@@ -139,7 +150,6 @@ class TaskList extends Component {
           <Tab label="当前作业" >
             <div>
             <List>
-              <Subheader inset={true}>未提交作业</Subheader>
               {this.renderCurrentTasks()}
             </List>
             </div>

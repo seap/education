@@ -39,41 +39,9 @@ class TaskDetail extends Component {
     fetchTaskDetail && fetchTaskDetail(this.props.params);
   }
 
-  startRecord = () => {
-    const { startRecord } = this.props.actions;
-    startRecord && startRecord();
-    // wx.startRecord();
-    this.setState({
-      isRecording: true
-    });
-  }
-
-  stopRecord = () => {
-    const { stopRecord } = this.props.actions;
-    stopRecord && stopRecord();
-    // wx.stopRecord({
-    //   success: (res) => {
-    //     this.setState({
-    //       isRecording: false
-    //     });
-    //     console.log('stop successed, res', res);
-    //
-    //     wx.playVoice(res);
-    //     console.log('playing...');
-    //   }
-    // });
-  }
-
-  playRecord = () => {
-
-  }
-
-  touchLocalRecord = (event) => {
-    console.log(event.target);
-  }
-
   renderTaskDetail() {
-    const { currentTask, localRecordList } = this.props.value.app;
+    const { isRecording, currentTask, localRecordList } = this.props.value.app;
+    const { startRecord, stopRecord, playRecord, deleteRecord } = this.props.actions;
     console.log('currentTask ', currentTask);
     if (currentTask) {
       return (
@@ -89,26 +57,24 @@ class TaskDetail extends Component {
 
           <List>
             <Subheader>我的语音作业</Subheader>
-            <ListItem primaryText="59''" leftIcon={<IconHearing />} rightIconButton={<FlatButton style={{height:48}} icon={<IconClear />} />} />
-            <ListItem primaryText="30''" leftIcon={<IconHearing />} rightIconButton={<FlatButton style={{height:48}} icon={<IconClear />} />} />
-            { localRecordList.map((e)=>
-              <ListItem primaryText={e}
+            { localRecordList.map((e, index) =>
+              <ListItem key={index} primaryText={e.name}
                 leftIcon={<IconHearing />}
-                onTouchTap={this.touchLocalRecord}
-                rightIconButton={<FlatButton style={{height:48}} icon={<IconClear />} />} /> )}
+                onTouchTap={() => playRecord(e)}
+                rightIconButton={<FlatButton style={{height:48}} icon={<IconClear />} onClick={() => deleteRecord(e)} />} /> )}
           </List>
           <CardActions style={{textAlign: 'center'}}>
             <RaisedButton
               label="开始录音"
               icon={<IconMic />}
-              disabled={this.state.isRecording}
-              onClick={this.startRecord}
+              disabled={isRecording}
+              onClick={startRecord}
               primary={true} />
             <RaisedButton
               label="结束录音"
               icon={<IconMicOff />}
-              disabled={!this.state.isRecording}
-              onClick={this.stopRecord}
+              disabled={!isRecording}
+              onClick={stopRecord}
               primary={true} />
           </CardActions>
 

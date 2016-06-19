@@ -5,7 +5,7 @@ const initialState = {
   message: null,
   bindSuccess: false,
   myInfo:null,
-  classList: [],
+  classList: [], //所有可支付班级
   myClasses: [],
   currentTask: null,
   isRecording: false,
@@ -41,9 +41,17 @@ export default function app(state = initialState, action) {
     case ActionTypes.ACTION_TASK_DETAIL_LOADED:
       return Object.assign({}, state, {currentTask: action.task});
 
-    case ActionTypes.ACTION_TASK_RECORD_COMPLETE:
-      state.localRecordList.push(action.localId);
-      return Object.assign({}, state);
+    case ActionTypes.ACTION_TASK_RECORD_START:
+      return Object.assign({}, state, {isRecording: true});
+
+    case ActionTypes.ACTION_TASK_RECORD_STOP:
+      state.localRecordList.push(action.record);
+      return Object.assign({}, state, {isRecording: false});
+    case ActionTypes.ACTION_TASK_RECORD_DELETE:
+      let localRecordList = state.localRecordList.filter(record =>
+        record.localId != action.record.localId
+      );
+      return Object.assign({}, state, {localRecordList});
     default:
       return state;
   }

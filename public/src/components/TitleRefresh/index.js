@@ -13,6 +13,6 @@ export default class TitleRefresh extends Component {
     }
   }
   render() {
-    return /(.*micromessage.*ios.*)|(.*ios.*micromessage.*)/i.test(navigator.userAgent) ? (<iframe ref={ iframe => this.iframe = iframe }/>) : null;
+    return <iframe ref={ iframe => this.iframe = iframe }/>;
   }
 }
