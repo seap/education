@@ -17,7 +17,7 @@ import IconCreate from 'material-ui/svg-icons/image/navigate-next';
 
 import Divider from 'material-ui/Divider';
 import FileFolder from 'material-ui/svg-icons/file/folder';
-import ActionAssignment from 'material-ui/svg-icons/action/assignment';
+import ActionAssignment from 'material-ui/svg-icons/file/folder';
 import {grey500} from 'material-ui/styles/colors';
 
 import DropDownMenu from 'material-ui/DropDownMenu';
