@@ -54,7 +54,10 @@ class NoticeList extends Component {
 
   renderMyClasses() {
     const { myClasses } = this.props.value.app;
-    if (myClasses && myClasses.length > 0) {
+    if (!myClasses) {
+      return;
+    }
+    if (myClasses.length > 0) {
       const classList = myClasses.map((clazz, index) =>
         <MenuItem key={index} value={clazz.clazz_id} primaryText={clazz.clazz_name} />
       );
@@ -95,13 +98,14 @@ class NoticeList extends Component {
           />
           </Link>
         )
+      } else {
+        return (
+          <div style={style.infoContainer}>
+            当前没有通告内容！
+          </div>
+        );
       }
     }
-    return (
-      <div style={style.infoContainer}>
-        当前没有通告内容！
-      </div>
-    );
   }
 
   renderLoading() {

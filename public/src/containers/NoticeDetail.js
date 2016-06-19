@@ -7,6 +7,7 @@ import * as IndexActions from '../actions';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {Card, CardHeader, CardTitle, CardText} from 'material-ui/Card';
+import Divider from 'material-ui/Divider';
 
 import Loader from '../components/Loader';
 import TitleRefresh from '../components/TitleRefresh';
@@ -37,6 +38,7 @@ class NoticeDetail extends Component {
                     title={notice.name}
                     subtitle={dateFormat(new Date(parseInt(notice.create_date) * 1000), 'yyyy-MM-dd')}
                   />
+                  <Divider />
                   <CardText>
                     {notice.context}
                   </CardText>
