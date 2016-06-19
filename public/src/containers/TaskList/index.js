@@ -45,9 +45,9 @@ class TaskList extends Component {
   constructor() {
     super();
     this.myTasks = null;
+    this.currentClass = null;
     this.state = {
-      classIndex: 0,
-      currentClass: null
+      classIndex: 0
     }
   }
 
@@ -62,7 +62,11 @@ class TaskList extends Component {
 
   renderMyClasses() {
     const { myClasses } = this.props.value.app;
-    if (myClasses && myClasses.length > 0) {
+    if (!myClasses) {
+      return;
+    }
+    if (myClasses.length > 0) {
+      this.currentClass = myClasses[this.state.classIndex];
       const classList = myClasses.map((clazz, index) =>
         <MenuItem key={index} value={clazz.clazz_id} primaryText={clazz.clazz_name} />
       );
@@ -103,13 +107,14 @@ class TaskList extends Component {
           />
           </Link>
         )
+      } else {
+        return (
+          <div style={style.infoContainer}>
+            没有已批改的作业！
+          </div>
+        );
       }
     }
-    return (
-      <div style={style.infoContainer}>
-        没有已批改的作业！
-      </div>
-    );
   }
 
   // 渲染当前作业
@@ -128,13 +133,14 @@ class TaskList extends Component {
           />
           </Link>
         )
+      } else {
+        return (
+          <div style={style.infoContainer}>
+            没有当前作业！
+          </div>
+        )
       }
     }
-    return (
-      <div style={style.infoContainer}>
-        没有当前作业！
-      </div>
-    );
   }
 
   renderLoading() {
@@ -145,8 +151,6 @@ class TaskList extends Component {
   }
 
   render() {
-    const { myClasses } = this.props.value.app;
-    this.currentClass = myClasses[this.state.classIndex];
     return (
       <div>
         <Helmet title="我的作业" />

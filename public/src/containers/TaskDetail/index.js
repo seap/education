@@ -18,7 +18,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 
 import IconMic from 'material-ui/svg-icons/av/mic';
 import IconMicOff from 'material-ui/svg-icons/av/mic-off';
-import IconHearing from 'material-ui/svg-icons/av/hearing';
+import IconHearing from 'material-ui/svg-icons/action/record-voice-over';
 import IconClear from 'material-ui/svg-icons/content/clear';
 import IconSave from 'material-ui/svg-icons/file/cloud-done';
 import IconSubmit from 'material-ui/svg-icons/file/cloud-upload';
@@ -40,7 +40,6 @@ class TaskDetail extends Component {
   renderTaskDetail() {
     const { isRecording, currentTask, localRecordList } = this.props.value.app;
     const { startRecord, stopRecord, playRecord, deleteRecord } = this.props.actions;
-    console.log('currentTask ', currentTask);
     if (currentTask) {
       return (
         <Card>
@@ -48,6 +47,7 @@ class TaskDetail extends Component {
             title={currentTask.task_name}
             subtitle="2016-05-29"
           />
+          <Divider />
           <CardText>
             {currentTask.task_content}
           </CardText>
@@ -89,7 +89,6 @@ class TaskDetail extends Component {
               onClick={this.submitTask}
               primary={true} />
           </CardActions>
-
         </Card>
       );
     }
@@ -101,7 +100,7 @@ class TaskDetail extends Component {
       <Loader visible={ isFetching } />
     );
   }
-  
+
   render() {
     return (
       <div>
