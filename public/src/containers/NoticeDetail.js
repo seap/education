@@ -24,7 +24,6 @@ class NoticeDetail extends Component {
   renderNoticeDetail() {
     const {classId, noticeId} = this.props.params;
     const { myClasses } = this.props.value.app;
-    console.log(myClasses);
     if (myClasses) {
       for (let i = 0; i < myClasses.length; i++) {
         if (myClasses[i].clazz_id == classId) {

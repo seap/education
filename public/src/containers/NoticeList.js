@@ -56,6 +56,7 @@ class NoticeList extends Component {
     if (!myClasses) {
       return;
     }
+    this.currentClass = myClasses[this.state.classIndex];
     if (myClasses.length > 0) {
       const classList = myClasses.map((clazz, index) =>
         <MenuItem key={index} value={clazz.clazz_id} primaryText={clazz.clazz_name} />
@@ -115,8 +116,6 @@ class NoticeList extends Component {
   }
 
   render() {
-    const { myClasses } = this.props.value.app;
-    this.currentClass = myClasses[this.state.classIndex];
     return (
       <div>
         <Helmet title="班级通告" />

@@ -113,7 +113,9 @@ class StuffList extends Component {
 
   render() {
     const { myClasses } = this.props.value.app;
-    this.currentClass = myClasses[this.state.classIndex];
+    if (myClasses) {
+      this.currentClass = myClasses[this.state.classIndex];
+    }
     return (
       <div>
         <Helmet title="辅导材料" />
