@@ -189,17 +189,18 @@ function allMyTaskLoaded(tasks) {
 
 //查询我的所有作业
 export function fetchAllMyTasks() {
-
   return async (dispatch, getState) => {
     if (getState().app.isFetching) {
       return;
     }
-    // const openId = Cookies.get('openid');
-    // if (!openId) {
-    //   //未绑定登录
-    //   return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
-    // }
-    const openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    let openId = Cookies.get('openid');
+    if (__DEVELOPMENT__) {
+      openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    }
+    if (!openId) {
+      //未绑定登录
+      return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
+    }
     dispatch(fetchRequest());
     try {
       let response = await fetch(`/webservice/student/query_clazz?openId=${openId}`);
@@ -216,13 +217,6 @@ export function fetchAllMyTasks() {
           myClasses[i].tasks = json.data
         }
       }
-      // myClasses.map(async (clazz) => {
-      //   response = await fetch(`/webservice/student/query_task?openId=${openId}&classId=${clazz.clazz_id}`);
-      //   json = await response.json();
-      //   if (json.errno === 0) {
-      //     clazz.tasks = json.data
-      //   }
-      // });
       dispatch(allMyTaskLoaded(myClasses));
     } catch (e) {
       console.log(e);
@@ -238,17 +232,20 @@ function taskDetailLoaded(task) {
   };
 }
 
+//查询作业详情
 export function fetchTaskDetail(params) {
   return async (dispatch, getState) => {
     if (getState().app.isFetching) {
       return;
     }
-    // const openId = Cookies.get('openid');
-    // if (!openId) {
-    //   //未绑定登录
-    //   return dispatch(push(`/wechat/login?referer=${encodeURIComponent(window.location.href)}`));
-    // }
-    const openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    let openId = Cookies.get('openid');
+    if (__DEVELOPMENT__) {
+      openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    }
+    if (!openId) {
+      //未绑定登录
+      return dispatch(push(`/wechat/login?referer=${encodeURIComponent(window.location.href)}`));
+    }
     dispatch(fetchRequest());
     try {
       let response = await fetch(`/webservice/student/query_task_info?openId=${openId}&taskId=${params.taskId}`);
