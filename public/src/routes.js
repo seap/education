@@ -42,9 +42,6 @@ function routes(store){
     path: '/task/detail/:taskId',
     getComponent(location, callback) {
       require.ensure([], require => callback(null, require('./containers/TaskDetail').default));
-    },
-    onEnter() {
-      store.dispatch(resetState());
     }
   };
 

@@ -41,7 +41,7 @@ export default function app(state = initialState, action) {
       return Object.assign({}, state, {myClasses: action.tasks, isFetching: false});
 
     case ActionTypes.ACTION_TASK_DETAIL_LOADED:
-      return Object.assign({}, state, {currentTask: action.task, isFetching: false});
+      return Object.assign({}, state, {currentTask: action.task, localRecordList:[], isFetching: false});
 
     case ActionTypes.ACTION_TASK_RECORD_START:
       return Object.assign({}, state, {isRecording: true});
