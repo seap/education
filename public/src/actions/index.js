@@ -97,8 +97,8 @@ export function wxConfig() {
   return async (dispatch, getState) => {
     try {
       await fetch(`/wechat/token`);
-      let response = await fetch(`/wechat/signature?url=${encodeURIComponent(window.location.href)}`);
-      //let response = await fetch(`/wechat/signature?url=${encodeURIComponent('http://w.siline.cn/task/list')}`);
+      // let response = await fetch(`/wechat/signature?url=${encodeURIComponent(window.location.href)}`);
+      let response = await fetch(`/wechat/signature?url=${encodeURIComponent('http://w.siline.cn/task/list')}`);
       let json = await response.json();
 
       wx.config({
