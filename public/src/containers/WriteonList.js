@@ -9,20 +9,16 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
 import {List, ListItem} from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 import IconCreate from 'material-ui/svg-icons/image/navigate-next';
 
 import Divider from 'material-ui/Divider';
-import FileFolder from 'material-ui/svg-icons/file/folder';
-import ActionAssignment from 'material-ui/svg-icons/action/assignment';
+import ActionAssignment from 'material-ui/svg-icons/action/picture-in-picture';
 import {grey500} from 'material-ui/styles/colors';
 
-import DropDownMenu from 'material-ui/DropDownMenu';
-import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import DropDownMenu from 'material-ui/DropDownMenu';
 import Loader from '../components/Loader';
 
 import { dateFormat } from '../common/js/utility';
@@ -54,7 +50,11 @@ class WriteonList extends Component {
 
   renderMyClasses() {
     const { myClasses } = this.props.value.app;
-    if (myClasses && myClasses.length > 0) {
+    if (!myClasses) {
+      return;
+    }
+    if (myClasses.length > 0) {
+      this.currentClass = myClasses[this.state.classIndex];
       const classList = myClasses.map((clazz, index) =>
         <MenuItem key={index} value={clazz.clazz_id} primaryText={clazz.clazz_name} />
       );
@@ -112,8 +112,6 @@ class WriteonList extends Component {
   }
 
   render() {
-    const { myClasses } = this.props.value.app;
-    this.currentClass = myClasses[this.state.classIndex];
     return (
       <div>
         <Helmet title="课程板书" />

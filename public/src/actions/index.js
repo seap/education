@@ -349,6 +349,37 @@ export function fetchWriteonList() {
   }
 }
 
+//查询板书详情
+export function fetchWriteonDetail(params) {
+  return async (dispatch, getState) => {
+    if (getState().app.isFetching) {
+      return;
+    }
+    let openId = Cookies.get('openid');
+    if (__DEVELOPMENT__) {
+      openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    }
+    if (!openId) {
+      //未绑定登录
+      return dispatch(push(`/wechat/login?referer=${encodeURIComponent(window.location.href)}`));
+    }
+    dispatch(fetchRequest());
+    try {
+      let response = await fetch(`/webservice/student/query_writeon_info?openId=${openId}&writeonId=${params.writeonId}`);
+      let json = await response.json();
+      if (json.errno !== 0 && json.data) {
+        return dispatch(sendMessage(json.errmsg));
+      }
+      dispatch({
+        type: ActionTypes.ACTION_WRITEON_DETAIL,
+        payload: json.data
+      });
+    } catch (e) {
+      dispatch(sendMessage('网络服务异常！'));
+    }
+  }
+}
+
 //查询板书列表
 export function fetchStuffList() {
   return async (dispatch, getState) => {

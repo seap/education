@@ -11,17 +11,8 @@ import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
-import CircularProgress from 'material-ui/CircularProgress';
-
-import IconMic from 'material-ui/svg-icons/av/mic';
-import IconMicOff from 'material-ui/svg-icons/av/mic-off';
-import IconHearing from 'material-ui/svg-icons/av/hearing';
-import IconClear from 'material-ui/svg-icons/content/clear';
-import IconSave from 'material-ui/svg-icons/file/cloud-done';
-import IconSubmit from 'material-ui/svg-icons/file/cloud-upload';
+import {GridList, GridTile} from 'material-ui/GridList';
 
 import Loader from '../components/Loader';
 import TitleRefresh from '../components/TitleRefresh';
@@ -33,62 +24,29 @@ class WriteonDetail extends Component {
 
   componentDidMount() {
     const { fetchWriteonDetail, wxConfig} = this.props.actions;
-    wxConfig && wxConfig();
     fetchWriteonDetail && fetchWriteonDetail(this.props.params);
   }
 
   renderWriteonDetail() {
-    const { isRecording, currentTask, localRecordList } = this.props.value.app;
-    const { startRecord, stopRecord, playRecord, deleteRecord } = this.props.actions;
-    console.log('currentTask ', currentTask);
-    if (currentTask) {
+    const { writeon } = this.props.value.app;
+    if (writeon) {
       return (
         <Card>
           <CardHeader
-            title={currentTask.task_name}
+            title={writeon.writeon_name}
             subtitle="2016-05-29"
           />
-          <CardText>
-            {currentTask.task_content}
-          </CardText>
           <Divider />
-
-          <List>
-            <Subheader>我的语音作业</Subheader>
-            { localRecordList.map((e, index) =>
-              <ListItem key={index} primaryText={e.name}
-                leftIcon={<IconHearing />}
-                onTouchTap={() => playRecord(e)}
-                rightIconButton={<FlatButton style={{height:48}} icon={<IconClear />} onClick={() => deleteRecord(e)} />} /> )}
-          </List>
-          <CardActions style={{textAlign: 'center'}}>
-            <RaisedButton
-              label="开始录音"
-              icon={<IconMic />}
-              disabled={isRecording}
-              onClick={startRecord}
-              primary={true} />
-            <RaisedButton
-              label="结束录音"
-              icon={<IconMicOff />}
-              disabled={!isRecording}
-              onClick={stopRecord}
-              primary={true} />
-          </CardActions>
-
-          <Divider />
-          <CardActions style={{textAlign: 'center'}}>
-            <RaisedButton
-              label="保存作业"
-              icon={<IconSave />}
-              onClick={this.saveTask}
-              primary={true} />
-            <RaisedButton
-              label="提交作业"
-              icon={<IconSubmit />}
-              onClick={this.submitTask}
-              primary={true} />
-          </CardActions>
+          <GridList cellHeight={200} >
+            {writeon.writeon_attach.map((tile, index) => (
+              <GridTile
+                key={index}
+                title={tile.attach_name}
+              >
+                <img src="http://img5.imgtn.bdimg.com/it/u=3855783883,4282176542&fm=21&gp=0.jpg" />
+              </GridTile>
+            ))}
+          </GridList>
 
         </Card>
       );
