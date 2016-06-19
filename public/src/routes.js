@@ -1,4 +1,5 @@
 import App from './containers/App';
+import { resetState } from './actions';
 
 if (typeof require.ensure !== 'function') require.ensure = (d, c) => c(require);
 
@@ -41,6 +42,9 @@ function routes(store){
     path: '/task/detail/:taskId',
     getComponent(location, callback) {
       require.ensure([], require => callback(null, require('./containers/TaskDetail').default));
+    },
+    onEnter() {
+      store.dispatch(resetState());
     }
   };
 

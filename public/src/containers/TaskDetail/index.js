@@ -23,14 +23,12 @@ import IconClear from 'material-ui/svg-icons/content/clear';
 import IconSave from 'material-ui/svg-icons/file/cloud-done';
 import IconSubmit from 'material-ui/svg-icons/file/cloud-upload';
 
+import Loader from '../../components/Loader';
 import TitleRefresh from '../../components/TitleRefresh';
 
 class TaskDetail extends Component {
   constructor() {
     super();
-    this.state = {
-      isRecording: false
-    }
   }
 
   componentDidMount() {
@@ -97,6 +95,13 @@ class TaskDetail extends Component {
     }
   }
 
+  renderLoading() {
+    const { isFetching } = this.props.value.app;
+    return (
+      <Loader visible={ isFetching } />
+    );
+  }
+  
   render() {
     return (
       <div>
@@ -107,6 +112,7 @@ class TaskDetail extends Component {
         </div>
         </MuiThemeProvider>
         <TitleRefresh />
+        {this.renderLoading()}
       </div>
     );
   }

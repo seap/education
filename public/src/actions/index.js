@@ -5,6 +5,13 @@ import * as ActionTypes from '../constants/actionTypes';
 
 import { dateFormat } from '../common/js/utility';
 
+// 重置state
+export function resetState() {
+  return {
+    type: ActionTypes.ACTION_STATE_RESET
+  }
+}
+
 // 发送消息
 export function sendMessage(message) {
   message = message || '服务异常';
@@ -233,19 +240,22 @@ function taskDetailLoaded(task) {
 
 export function fetchTaskDetail(params) {
   return async (dispatch, getState) => {
+    if (getState().app.isFetching) {
+      return;
+    }
     // const openId = Cookies.get('openid');
     // if (!openId) {
     //   //未绑定登录
     //   return dispatch(push(`/wechat/login?referer=${encodeURIComponent(window.location.href)}`));
     // }
     const openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    dispatch(fetchRequest());
     try {
       let response = await fetch(`/webservice/student/query_task_info?openId=${openId}&taskId=${params.taskId}`);
       let json = await response.json();
       if (json.errno !== 0 && json.data) {
         return dispatch(sendMessage(json.errmsg));
       }
-
       dispatch(taskDetailLoaded(json.data));
     } catch (e) {
       console.log(e);

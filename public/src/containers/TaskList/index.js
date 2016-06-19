@@ -30,6 +30,7 @@ import styles from './main.scss';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import Loader from '../../components/Loader';
 
 import { dateFormat } from '../../common/js/utility';
 
@@ -136,6 +137,13 @@ class TaskList extends Component {
     );
   }
 
+  renderLoading() {
+    const { isFetching } = this.props.value.app;
+    return (
+      <Loader visible={ isFetching } />
+    );
+  }
+
   render() {
     const { myClasses } = this.props.value.app;
     this.currentClass = myClasses[this.state.classIndex];
@@ -160,6 +168,7 @@ class TaskList extends Component {
         </Tabs>
         </div>
         </MuiThemeProvider>
+        {this.renderLoading()}
       </div>
     );
   }

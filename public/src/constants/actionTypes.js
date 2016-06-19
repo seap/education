@@ -1,3 +1,4 @@
+export const ACTION_STATE_RESET = 'ACTION_STATE_RESET';
 
 // 消息处理
 export const ACTION_MESSAGE_SEND = 'ACTION_MESSAGE_SEND'; //消息提示

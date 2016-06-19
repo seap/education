@@ -14,6 +14,8 @@ const initialState = {
 export default function app(state = initialState, action) {
 
   switch (action.type) {
+    case ActionTypes.ACTION_STATE_RESET:
+      return initialState;
     case ActionTypes.ACTION_MESSAGE_SEND:
       return Object.assign({}, state, {isFetching: false, message: action.message});
     case ActionTypes.ACTION_MESSAGE_CONFIRMATION:
@@ -36,10 +38,10 @@ export default function app(state = initialState, action) {
       return Object.assign({}, state, {allTasks: newAllTasks});
 
     case ActionTypes.ACTION_MY_ALL_TASK_LOADED:
-      return Object.assign({}, state, {myClasses: action.tasks});
+      return Object.assign({}, state, {myClasses: action.tasks, isFetching: false});
 
     case ActionTypes.ACTION_TASK_DETAIL_LOADED:
-      return Object.assign({}, state, {currentTask: action.task});
+      return Object.assign({}, state, {currentTask: action.task, isFetching: false});
 
     case ActionTypes.ACTION_TASK_RECORD_START:
       return Object.assign({}, state, {isRecording: true});
