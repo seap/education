@@ -10,20 +10,18 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 
 import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
 import {List, ListItem} from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 import IconCreate from 'material-ui/svg-icons/image/navigate-next';
 
-import Divider from 'material-ui/Divider';
 import ActionAssignment from 'material-ui/svg-icons/social/notifications';
 import {grey500} from 'material-ui/styles/colors';
 
 import DropDownMenu from 'material-ui/DropDownMenu';
-import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-import Loader from '../components/Loader';
 
+import Loader from '../components/Loader';
+import TitleRefresh from '../components/TitleRefresh';
 import { dateFormat } from '../common/js/utility';
 
 const style = {
@@ -128,6 +126,7 @@ class NoticeList extends Component {
           </List>
         </div>
         </MuiThemeProvider>
+        <TitleRefresh />
         {this.renderLoading()}
       </div>
     );
