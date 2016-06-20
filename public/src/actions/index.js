@@ -215,7 +215,7 @@ export function fetchAllMyTasks() {
 
       let myClasses = json.data;
       for (let i = 0; i < myClasses.length; i++) {
-        response = await fetch(`/webservice/student/query_task?openId=${openId}&classId=${myClasses[i].clazz_id}`);
+        response = await fetch(`/webservice/student/query_task?openId=${openId}&clazzId=${myClasses[i].clazz_id}`);
         json = await response.json();
         if (json.errno === 0) {
           myClasses[i].tasks = json.data
@@ -335,7 +335,7 @@ export function fetchWriteonList() {
 
       let myClasses = json.data;
       for (let i = 0; i < myClasses.length; i++) {
-        response = await fetch(`/webservice/student/query_writeon?openId=${openId}&classId=${myClasses[i].clazz_id}`);
+        response = await fetch(`/webservice/student/query_writeon?openId=${openId}&clazzId=${myClasses[i].clazz_id}`);
         json = await response.json();
         if (json.errno === 0) {
           myClasses[i].writeons = json.data
@@ -404,7 +404,7 @@ export function fetchStuffList() {
 
       let myClasses = json.data;
       for (let i = 0; i < myClasses.length; i++) {
-        response = await fetch(`/webservice/student/query_stuff?openId=${openId}&classId=${myClasses[i].clazz_id}`);
+        response = await fetch(`/webservice/student/query_stuff?openId=${openId}&clazzId=${myClasses[i].clazz_id}`);
         json = await response.json();
         if (json.errno === 0) {
           myClasses[i].stuffs = json.data

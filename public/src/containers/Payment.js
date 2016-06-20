@@ -79,7 +79,7 @@ class Payment extends Component {
     const menuList = classList.map((clazz) => <MenuItem key={clazz.id} value={clazz.id} primaryText={clazz.clazz_name} />);
     if (myInfo && classList) {
       return (
-        <div>
+        <div style={{padding: 10}}>
         <TextField
           id="studentName"
           floatingLabelText="姓名"
@@ -105,6 +105,7 @@ class Payment extends Component {
          value={classList[this.state.clazzIndex].cost}
          disabled={true}
          fullWidth={true} />
+         <div style={{textAlign: 'center'}}>
          <RaisedButton
            id="bind"
            label="付款"
@@ -112,6 +113,7 @@ class Payment extends Component {
            onTouchTap={this.handleSubmit}
            primary={true}
            fullWidth={true} />
+         </div>
          </div>
       )
     }
