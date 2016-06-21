@@ -38,7 +38,7 @@ class TaskDetail extends Component {
 
   renderTaskDetail() {
     const { isRecording, currentTask, localRecordList } = this.props.value.app;
-    const { startRecord, stopRecord, playRecord, deleteRecord } = this.props.actions;
+    const { startRecord, stopRecord, playRecord, deleteRecord, saveTask, submitTask } = this.props.actions;
     if (currentTask) {
       return (
         <Card>
@@ -80,12 +80,12 @@ class TaskDetail extends Component {
             <RaisedButton
               label="保存作业"
               icon={<IconSave />}
-              onClick={this.saveTask}
+              onClick={saveTask}
               primary={true} />
             <RaisedButton
               label="提交作业"
               icon={<IconSubmit />}
-              onClick={this.submitTask}
+              onClick={submitTask}
               primary={true} />
           </CardActions>
         </Card>

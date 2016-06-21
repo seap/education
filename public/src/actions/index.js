@@ -175,12 +175,31 @@ export function playRecord(record) {
 }
 
 export function deleteRecord(record) {
-  console.log(record);
   return (dispatch, getState) => {
     dispatch({
       type: ActionTypes.ACTION_TASK_RECORD_DELETE,
       record
     });
+  }
+}
+
+//保存当前作业
+export function saveTask() {
+  return (dispatch, getState) => {
+
+    if (getState().app.localRecordList && getState().app.localRecordList[0]) {
+      let record = getState().app.localRecordList[0];
+      console.log(record);
+      wx.uploadVoice({
+        localId: record.localId, // 需要上传的音频的本地ID，由stopRecord接口获得
+        isShowProgressTips: 1, // 默认为1，显示进度提示
+        success: function (res) {
+          var serverId = res.serverId; // 返回音频的服务器端ID
+          console.log('serverId: ', serverId); // 返回音频的服务器端ID
+        }
+      });
+    }
+
   }
 }
 
@@ -209,6 +228,10 @@ export function fetchAllMyTasks() {
     try {
       let response = await fetch(`/webservice/student/query_clazz?openId=${openId}`);
       let json = await response.json();
+      if (json.errno == 9) {
+        //未绑定登录
+        return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
+      }
       if (json.errno !== 0 && json.data) {
         return dispatch(sendMessage(json.errmsg));
       }
