@@ -35,6 +35,13 @@ export function fetchRequest() {
   }
 }
 
+// 数据请求结束
+export function fetchComplete() {
+  return {
+    type: ActionTypes.ACTION_FETCH_COMPLETE
+  }
+}
+
 // 绑定成功
 export function bindSuccess() {
   return {
@@ -230,6 +237,7 @@ export function fetchAllMyTasks() {
       let json = await response.json();
       if (json.errno == 14) {
         //未绑定登录
+        dispatch(fetchComplete());
         return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
       }
       if (json.errno !== 0 && json.data) {

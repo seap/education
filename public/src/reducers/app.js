@@ -22,6 +22,8 @@ export default function app(state = initialState, action) {
       return Object.assign({}, state, {message: null});
     case ActionTypes.ACTION_FETCH_REQUEST:
       return Object.assign({}, state, {isFetching: true});
+    case ActionTypes.ACTION_FETCH_COMPLETE:
+      return Object.assign({}, state, {isFetching: false}); 
 
     case ActionTypes.ACTION_BINDING_SUCCESS:
       return Object.assign({}, state, {isFetching: false, message: '绑定成功！', bindSuccess: true});
