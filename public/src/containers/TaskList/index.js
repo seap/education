@@ -10,7 +10,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 
 import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
+import FlatButton from 'material-ui/FlatButton';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import {List, ListItem} from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
@@ -59,6 +59,11 @@ class TaskList extends Component {
   handleClassChange = (event, index, value) => this.setState({
     classIndex: index
   });
+
+  handleClose = () => {
+    const { confirmMessage } = this.props.actions;
+    confirmMessage();
+  }
 
   renderMyClasses() {
     const { myClasses } = this.props.value.app;
@@ -147,6 +152,29 @@ class TaskList extends Component {
     const { isFetching } = this.props.value.app;
     return (
       <Loader visible={ isFetching } />
+    );
+  }
+
+  renderDialog() {
+    const { message } = this.props.value.app;
+    if (!message) {
+      return;
+    }
+    const actions = [
+      <FlatButton
+        label="确认"
+        primary={true}
+        onClick={this.handleClose}
+      />
+    ];
+    return (
+      <Dialog
+          actions={actions}
+          modal={true}
+          open={true}
+          onRequestClose={this.handleClose} >
+        {message}
+      </Dialog>
     );
   }
 

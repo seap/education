@@ -228,7 +228,7 @@ export function fetchAllMyTasks() {
     try {
       let response = await fetch(`/webservice/student/query_clazz?openId=${openId}`);
       let json = await response.json();
-      if (json.errno == 9) {
+      if (json.errno == 14) {
         //未绑定登录
         return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
       }
@@ -318,8 +318,17 @@ export function fetchMyInfo() {
 //查询已激活班级
 export function fetchClassList() {
   return async (dispatch, getState) => {
+    let openId = Cookies.get('openid');
+    if (__DEVELOPMENT__) {
+      openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    }
+    if (!openId) {
+      //未绑定登录
+      return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
+    }
+
     try {
-      let response = await fetch(`/webservice/clazz/query_clazz`);
+      let response = await fetch(`/webservice/clazz/query_clazz?openId=${openId}`);
       let json = await response.json();
       if (json.errno !== 0 && json.data) {
         return dispatch(sendMessage(json.errmsg));
