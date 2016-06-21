@@ -254,7 +254,7 @@ export function fetchAllMyTasks() {
       }
       dispatch(allMyTaskLoaded(myClasses));
     } catch (e) {
-      console.log(e);
+      return dispatch(sendMessage('服务异常，请稍后再试！'));
     }
 
   }

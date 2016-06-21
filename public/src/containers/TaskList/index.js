@@ -201,6 +201,7 @@ class TaskList extends Component {
         </div>
         </MuiThemeProvider>
         {this.renderLoading()}
+        {this.renderDialog()}
       </div>
     );
   }
