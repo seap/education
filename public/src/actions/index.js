@@ -229,7 +229,7 @@ export function fetchAllMyTasks() {
     }
     if (!openId) {
       //未绑定登录
-      return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
+      return dispatch(push(`http://w.siline.cn/wechat/login?referer=${encodeURIComponent(window.location.href)}`));
     }
     dispatch(fetchRequest());
     try {
@@ -238,7 +238,7 @@ export function fetchAllMyTasks() {
       if (json.errno == 14) {
         //未绑定登录
         dispatch(fetchComplete());
-        return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
+        return dispatch(push(`http://w.siline.cn/wechat/login?referer=${encodeURIComponent(window.location.href)}`));
       }
       if (json.errno !== 0 && json.data) {
         return dispatch(sendMessage(json.errmsg));
