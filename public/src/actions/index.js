@@ -172,7 +172,7 @@ export function stopRecord() {
   return (dispatch, getState) => {
     wx && wx.stopRecord({
       success: function (res) {
-        console.log('stop successed, res', res);
+        // console.log('stop successed, res', res);
         dispatch(addLocalRecord(res));
         // wx.playVoice(res);
       }
@@ -284,7 +284,7 @@ export function fetchTaskDetail(params) {
     }
     if (!openId) {
       //未绑定登录
-      return dispatch(push(`/wechat/login?referer=${encodeURIComponent(window.location.href)}`));
+      redirectPassport();
     }
     dispatch(fetchRequest());
     try {
@@ -309,11 +309,16 @@ export function fetchMyInfo() {
     }
     if (!openId) {
       //未绑定登录
-      return dispatch(push(`/wechat/login?referer=${encodeURIComponent(window.location.href)}`));
+      return redirectPassport();
     }
     try {
       let response = await fetch(`/webservice/student/self_info?openId=${openId}`);
       let json = await response.json();
+      if (json.errno == 14) {
+        //未绑定登录
+        return redirectPassport();
+      }
+
       if (json.errno !== 0 && json.data) {
         return dispatch(sendMessage(json.errmsg));
       }
@@ -343,6 +348,10 @@ export function fetchClassList() {
     try {
       let response = await fetch(`/webservice/clazz/query_clazz?openId=${openId}`);
       let json = await response.json();
+      if (json.errno == 14) {
+        //未绑定登录
+        return redirectPassport();
+      }
       if (json.errno !== 0 && json.data) {
         return dispatch(sendMessage(json.errmsg));
       }
@@ -368,7 +377,7 @@ export function fetchWriteonList() {
     }
     if (!openId) {
       //未绑定登录
-      return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
+      return redirectPassport();
     }
     dispatch(fetchRequest());
     try {
@@ -406,7 +415,7 @@ export function fetchWriteonDetail(params) {
     }
     if (!openId) {
       //未绑定登录
-      return dispatch(push(`/wechat/login?referer=${encodeURIComponent(window.location.href)}`));
+      return redirectPassport();
     }
     dispatch(fetchRequest());
     try {
@@ -437,7 +446,7 @@ export function fetchStuffList() {
     }
     if (!openId) {
       //未绑定登录
-      return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
+      return redirectPassport();
     }
     dispatch(fetchRequest());
     try {
@@ -477,7 +486,7 @@ export function fetchStuffDetail(params) {
     }
     if (!openId) {
       //未绑定登录
-      return dispatch(push(`/wechat/login?referer=${encodeURIComponent(window.location.href)}`));
+      return redirectPassport();
     }
     dispatch(fetchRequest());
     try {
@@ -509,7 +518,7 @@ export function fetchNoticeList() {
     }
     if (!openId) {
       //未绑定登录
-      return dispatch(push(`/bind?referer=${encodeURIComponent(window.location.href)}`));
+      return redirectPassport();
     }
     dispatch(fetchRequest());
     try {
