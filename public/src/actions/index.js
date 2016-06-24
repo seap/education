@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import { push } from 'react-router-redux';
 import * as ActionTypes from '../constants/actionTypes';
 
-import { dateFormat } from '../common/js/utility';
+import { dateFormat, param } from '../common/js/utility';
 
 //登录跳转
 function redirectPassport() {
@@ -195,21 +195,89 @@ export function deleteRecord(record) {
   }
 }
 
-//保存当前作业
-export function saveTask() {
-  return (dispatch, getState) => {
+function uploadVoicePromise(record) {
+  return new Promise((resolve, reject) => {
+    wx.uploadVoice({
+      localId: record.localId, // 需要上传的音频的本地ID，由stopRecord接口获得
+      isShowProgressTips: 1, // 默认为1，显示进度提示
+      success: function (res) {
+        // var serverId = res.serverId; // 返回音频的服务器端ID
+        record.serverId = res.serverId;
+        console.log('uploaded record : ', record); // 返回音频的服务器端ID
+        resolve(record);
+      },
+      fail: function(e) {
+        reject(e);
+      }
+    });
+  });
+}
 
-    if (getState().app.localRecordList && getState().app.localRecordList[0]) {
-      let record = getState().app.localRecordList[0];
-      console.log(record);
-      wx.uploadVoice({
-        localId: record.localId, // 需要上传的音频的本地ID，由stopRecord接口获得
-        isShowProgressTips: 1, // 默认为1，显示进度提示
-        success: function (res) {
-          var serverId = res.serverId; // 返回音频的服务器端ID
-          console.log('serverId: ', serverId); // 返回音频的服务器端ID
+//保存当前作业
+export function saveTask(taskId) {
+  return async (dispatch, getState) => {
+    let openId = Cookies.get('openid');
+    if (__DEVELOPMENT__) {
+      openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    }
+
+    if (getState().app.isFetching) {
+      return;
+    }
+    dispatch(fetchRequest());
+    let localRecordList = getState().app.localRecordList;
+    if (localRecordList) {
+      // let promises = localRecordList.map((record) => uploadVoicePromise(record));
+      Promise.all(localRecordList.map(record => uploadVoicePromise(record)))
+      .then(async (record) => {
+        console.log('record result: ', record);
+
+        try {
+          let data = new FormData();
+          data.append('openId', openId);
+          data.append('taskId', getState().app.currentTask.task_id);
+          data.append('studentAnswers', JSON.stringify(record));
+
+          let response = await fetch(`/webservice/student/save_task`, {
+            method: 'POST',
+            body: data
+            // headers: {
+            //   'Accept': 'application/json',
+            //   'Content-Type': 'application/json'
+            // },
+            // body: JSON.stringify({
+            //   openId,
+            //   taskId: getState().app.currentTask.task_id,
+            //   studentAnswers: record
+            // })
+          });
+          let json = await response.json();
+          console.log('json: ', json);
+          if (json.errno !== 0 && json.data) {
+            return dispatch(sendMessage(json.errmsg));
+          }
+        } catch (e) {
+          dispatch(sendMessage('网络服务异常！'));
         }
+        dispatch(fetchComplete());
+      }).catch((e) => {
+        console.log('e: ', e);
+        dispatch(sendMessage('微信服务异常！'))
       });
+
+      // Promise.all(promises).then((res)=>{
+      //   console.log('res......., ', res);
+      // });
+      // let record = getState().app.localRecordList[0];
+      // console.log(record);
+      // wx.uploadVoice({
+      //   localId: record.localId, // 需要上传的音频的本地ID，由stopRecord接口获得
+      //   isShowProgressTips: 1, // 默认为1，显示进度提示
+      //   success: function (res) {
+      //     var serverId = res.serverId; // 返回音频的服务器端ID
+      //     console.log('serverId: ', serverId); // 返回音频的服务器端ID
+      //   }
+      // });
     }
 
   }
@@ -539,6 +607,46 @@ export function fetchNoticeList() {
         }
       }
       dispatch(allMyTaskLoaded(myClasses));
+    } catch (e) {
+      dispatch(sendMessage('网络服务异常！'));
+    }
+  }
+}
+
+//微信支付
+export function wxPayment() {
+  return async (dispatch, getState) => {
+    if (getState().app.isFetching) {
+      return;
+    }
+    try {
+      let response = await fetch(`/wechat/pay/request/oUoJLv6jTegVkkRhXBnhq5XSvvBQ/1`);
+      let json = await response.json();
+      console.log('pay json: ', json);
+
+      function onBridgeReady(){
+        WeixinJSBridge.invoke('getBrandWCPayRequest', json,
+          function(res){
+            if (res.err_msg === 'get_brand_wcpay_request:ok') {
+              dispatch(sendMessage('支付成功！'));
+            } else if(res.err_msg === 'get_brand_wcpay_request:cancel') {
+              dispatch(sendMessage('支付过程中用户取消！'));
+            } else {
+              dispatch(sendMessage(res.err_msg));
+            }
+          }
+        );
+      }
+      if (typeof WeixinJSBridge == "undefined"){
+         if ( document.addEventListener ){
+             document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+         } else if (document.attachEvent){
+             document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+             document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+         }
+      } else{
+         onBridgeReady();
+      }
     } catch (e) {
       dispatch(sendMessage('网络服务异常！'));
     }

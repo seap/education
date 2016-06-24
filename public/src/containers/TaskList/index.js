@@ -8,6 +8,7 @@ import * as IndexActions from '../../actions';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
+import Dialog from 'material-ui/Dialog';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
@@ -198,10 +199,10 @@ class TaskList extends Component {
             {this.renderCompletedTasks()}
           </Tab>
         </Tabs>
-        </div>
-        </MuiThemeProvider>
         {this.renderLoading()}
         {this.renderDialog()}
+        </div>
+        </MuiThemeProvider>
       </div>
     );
   }

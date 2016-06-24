@@ -14,6 +14,7 @@ import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Ca
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
+import Dialog from 'material-ui/Dialog';
 
 import IconMic from 'material-ui/svg-icons/av/mic';
 import IconMicOff from 'material-ui/svg-icons/av/mic-off';
@@ -100,6 +101,35 @@ class TaskDetail extends Component {
     );
   }
 
+  handleClose = () => {
+    const { confirmMessage } = this.props.actions;
+    confirmMessage();
+  }
+
+
+  renderDialog() {
+    const { message } = this.props.value.app;
+    if (!message) {
+      return;
+    }
+    const actions = [
+      <FlatButton
+        label="确认"
+        primary={true}
+        onClick={this.handleClose}
+      />
+    ];
+    return (
+      <Dialog
+          actions={actions}
+          modal={true}
+          open={true}
+          onRequestClose={this.handleClose} >
+        {message}
+      </Dialog>
+    );
+  }
+
   render() {
     return (
       <div>
@@ -107,6 +137,7 @@ class TaskDetail extends Component {
         <MuiThemeProvider muiTheme={ getMuiTheme({userAgent: this.props.value.userAgent}) }>
         <div>
           {this.renderTaskDetail()}
+          {this.renderDialog()}
         </div>
         </MuiThemeProvider>
         <TitleRefresh />

@@ -60,10 +60,11 @@ class Payment extends Component {
   }
 
   handleSubmit = () => {
-    const { isFetching } = this.props.actions;
+    const { isFetching, wxPayment } = this.props.actions;
     if (isFetching) {
       return;
     }
+    wxPayment();
   }
 
   handleClose = () => {
@@ -144,8 +145,8 @@ class Payment extends Component {
         label="确认"
         primary={true}
         onClick={this.handleClose}
-      />
-    ];
+      /> ];
+
     return (
       <Dialog
           actions={actions}
