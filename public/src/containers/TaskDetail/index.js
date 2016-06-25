@@ -76,6 +76,27 @@ class TaskDetail extends Component {
               primary={true} />
         </CardActions>
       );
+    } else if (currentTask.status == 'compl') { //已批改
+      return (
+        <div>
+        <Divider />
+        <List>
+          <Subheader>老师批改</Subheader>
+          <ListItem
+            primaryText="批改语音"
+            leftIcon={<IconHearing />}
+            onTouchTap={() => this.playRemoteAudio(currentTask.teacher_corre)}  />
+        </List>
+        <CardText>
+          备注：{currentTask.corre_content}
+        </CardText>
+        <CardText>
+          评分：{currentTask.score}
+        </CardText>
+
+        </div>
+      );
+
     }
 
   }
