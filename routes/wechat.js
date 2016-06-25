@@ -245,7 +245,7 @@ router.get('/pay/request/:openId/:classId', async (req, res) => {
       body: '班级学费支付',
       mch_id: config.mchId,
       nonce_str: createNonceStr(),
-      notify_url: 'http://wxpay.weixin.qq.com/pub_v2/pay/notify.v2.php',
+      notify_url: 'http://w.siline.cn/wechat/pay/notify',
       openid: req.params.openId,
       out_trade_no: createOrderId(),
       spbill_create_ip: '121.225.151.4',
@@ -290,10 +290,17 @@ router.get('/pay/request/:openId/:classId', async (req, res) => {
 });
 
 //微信支付结果通知
-// router.get('/pay/result', async (req, res) => {
-//   console.log(req.query.partnerid);
-//   const success = '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
-//   res.end(success);
-// });
+router.post('/pay/notify', async (req, res) => {
+  console.log('req.body: ', req.body);
+  const success = '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
+  res.end(success);
+});
+
+//微信支付结果通知
+router.get('/pay/notify', async (req, res) => {
+  console.log('req.get: ', req.body);
+  const success = '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
+  res.end(success);
+});
 
 export default router;
