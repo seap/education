@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import Helmet from 'react-helmet';
 import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -51,12 +52,6 @@ class UserRegister extends Component {
   }
 
   handleSubmit = () => {
-    console.log('submit......');
-    // if (this.state.studentName == '') {
-    //   this.setState({
-    //     studentNameError: '请输入姓名'
-    //   });
-    // }
     const { register } = this.props.actions;
     register(this.state);
   }
@@ -70,10 +65,10 @@ class UserRegister extends Component {
     return (
        <MuiThemeProvider  muiTheme={ getMuiTheme({userAgent: this.props.value.userAgent}) }>
          <div style={style.container}>
-
          <AppBar
            title="帐号注册"
          />
+         <Helmet title="帐号注册" />
          <div style={style.bindForm} >
          <TextField
           id="studentName"

@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import Helmet from 'react-helmet';
 import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -123,8 +124,8 @@ class Payment extends Component {
     const { myInfo } = this.props.value.app;
     return (
        <MuiThemeProvider  muiTheme={ getMuiTheme({userAgent: this.props.value.userAgent}) }>
-         <Helmet title="学生付款" />
          <div style={style.container}>
+         <Helmet title="学生付款" />
          <AppBar
            title="学生付款"
          />

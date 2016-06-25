@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import Helmet from 'react-helmet';
 import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -80,6 +81,7 @@ class UserBinding extends Component {
          <AppBar
            title="帐号绑定"
          />
+         <Helmet title="帐号绑定" />
          <div style={style.bindForm} >
          <TextField
            id="studentId"
