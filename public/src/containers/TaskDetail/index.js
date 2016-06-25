@@ -41,7 +41,7 @@ class TaskDetail extends Component {
   playRemoteAudio(url) {
     let audioPlayer = this.refs.audio;
     // audioPlayer.src = url;
-    audioPlayer.src = 'http://yinyueshiting.baidu.com/data2/music/122873158/4904681466708461128.mp3?xcode=83922a82d5eacf7d350a5c038dd045b5';
+    audioPlayer.src = 'http://admin.siline.cn/uploads/1466827761863.mp3';
     audioPlayer.play();
   }
 
