@@ -250,6 +250,7 @@ function syncUploadVoice(records, callback) {
 
 // 提交保存保存当前作业， submitting为ture时，为提交作业
 export function saveTask(submitting) {
+  console.log('submitting: ', submitting);
   return (dispatch, getState) => {
     let openId = Cookies.get('openid');
     if (__DEVELOPMENT__) {
@@ -270,7 +271,7 @@ export function saveTask(submitting) {
           data.append('taskId', getState().app.currentTask.task_id);
           data.append('studentAnswers', JSON.stringify(newRecords));
           let url = `/webservice/student/save_task`;
-          if (submitting) {
+          if (submitting == 1) {
             url = `/webservice/student/submit_task`;
           }
           let response = await fetch(url, {
@@ -278,14 +279,14 @@ export function saveTask(submitting) {
             body: data
           });
           let json = await response.json();
-          if (json.errno !== 0 && json.data) {
+          if (json.errno !== 0 || !json.data) {
             return dispatch(sendMessage(json.errmsg));
           }
           dispatch({
             type: ActionTypes.ACTION_TASK_RECORD_SAVE,
             payload: json.data
           });
-          return dispatch(sendMessage(submitting ? '提交成功' : '保存成功！'));
+          return dispatch(sendMessage(submitting == 1 ? '提交成功! ':'保存成功!'));
         } catch (e) {
           dispatch(sendMessage('网络服务异常！'));
         }

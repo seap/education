@@ -67,12 +67,12 @@ class TaskDetail extends Component {
             <RaisedButton
               label="保存作业"
               icon={<IconSave />}
-              onClick={saveTask}
+              onClick={() => saveTask(0)}
               primary={true} />
             <RaisedButton
               label="提交作业"
               icon={<IconSubmit />}
-              onClick={() => saveTask(true)}
+              onClick={() => saveTask(1)}
               primary={true} />
         </CardActions>
       );
