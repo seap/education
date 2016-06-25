@@ -290,10 +290,10 @@ router.get('/pay/request/:openId/:classId', async (req, res) => {
 });
 
 //微信支付结果通知
-router.get('/pay/result', async (req, res) => {
-  console.log(req.query.partnerid);
-  cont success = '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
-  res.end(success);
-});
+// router.get('/pay/result', async (req, res) => {
+//   console.log(req.query.partnerid);
+//   const success = '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
+//   res.end(success);
+// });
 
 export default router;

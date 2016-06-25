@@ -23,7 +23,7 @@ export default function app(state = initialState, action) {
     case ActionTypes.ACTION_FETCH_REQUEST:
       return Object.assign({}, state, {isFetching: true});
     case ActionTypes.ACTION_FETCH_COMPLETE:
-      return Object.assign({}, state, {isFetching: false}); 
+      return Object.assign({}, state, {isFetching: false});
 
     case ActionTypes.ACTION_BINDING_SUCCESS:
       return Object.assign({}, state, {isFetching: false, message: '绑定成功！', bindSuccess: true});
@@ -51,15 +51,19 @@ export default function app(state = initialState, action) {
     case ActionTypes.ACTION_TASK_RECORD_STOP:
       state.localRecordList.push(action.record);
       return Object.assign({}, state, {isRecording: false});
+
     case ActionTypes.ACTION_TASK_RECORD_DELETE:
       let localRecordList = state.localRecordList.filter(record =>
         record.localId != action.record.localId
       );
       return Object.assign({}, state, {localRecordList});
+
     case ActionTypes.ACTION_WRITEON_DETAIL:
       return Object.assign({}, state, {writeon: action.payload, isFetching: false });
+
     case ActionTypes.ACTION_STUFF_DETAIL:
       return Object.assign({}, state, {stuff: action.payload, isFetching: false });
+      
     default:
       return state;
   }

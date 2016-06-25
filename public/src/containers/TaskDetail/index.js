@@ -25,6 +25,7 @@ import IconSubmit from 'material-ui/svg-icons/file/cloud-upload';
 
 import Loader from '../../components/Loader';
 import TitleRefresh from '../../components/TitleRefresh';
+import { dateFormat } from '../../common/js/utility';
 
 class TaskDetail extends Component {
   constructor() {
@@ -37,6 +38,12 @@ class TaskDetail extends Component {
     fetchTaskDetail && fetchTaskDetail(this.props.params);
   }
 
+  playRemoteAudio(url) {
+    let audioPlayer = this.refs.audio;
+    audioPlayer.src = url;
+    audioPlayer.play();
+  }
+
   renderTaskDetail() {
     const { isRecording, currentTask, localRecordList } = this.props.value.app;
     const { startRecord, stopRecord, playRecord, deleteRecord, saveTask, submitTask } = this.props.actions;
@@ -45,7 +52,7 @@ class TaskDetail extends Component {
         <Card>
           <CardHeader
             title={currentTask.task_name}
-            subtitle="2016-05-29"
+            subtitle={dateFormat(new Date(parseInt(currentTask.create_date)*1000), 'yyyy-MM-dd')}
           />
           <Divider />
           <CardText>
@@ -55,11 +62,24 @@ class TaskDetail extends Component {
 
           <List>
             <Subheader>我的语音作业</Subheader>
+            <audio ref='audio' />
+            { currentTask.student_answers.map((e, index) =>
+              <ListItem
+                key={index}
+                primaryText={e.name}
+                leftIcon={<IconHearing />}
+                onTouchTap={() => this.playRemoteAudio(e.student_answer)}
+                rightIconButton={<FlatButton style={{height:48}} icon={<IconClear />} onClick={() => deleteRecord(e)} />} />
+            )}
+
             { localRecordList.map((e, index) =>
-              <ListItem key={index} primaryText={e.name}
+              <ListItem
+                key={index}
+                primaryText={e.name}
                 leftIcon={<IconHearing />}
                 onTouchTap={() => playRecord(e)}
-                rightIconButton={<FlatButton style={{height:48}} icon={<IconClear />} onClick={() => deleteRecord(e)} />} /> )}
+                rightIconButton={<FlatButton style={{height:48}} icon={<IconClear />} onClick={() => deleteRecord(e)} />} />
+            )}
           </List>
           <CardActions style={{textAlign: 'center'}}>
             <RaisedButton
