@@ -467,6 +467,10 @@ export function fetchWriteonList() {
     try {
       let response = await fetch(`/webservice/student/query_clazz?openId=${openId}`);
       let json = await response.json();
+      if (json.errno == 14) {
+        //未绑定登录
+        return redirectPassport();
+      }
       if (json.errno !== 0 && json.data) {
         return dispatch(sendMessage(json.errmsg));
       }
@@ -536,6 +540,10 @@ export function fetchStuffList() {
     try {
       let response = await fetch(`/webservice/student/query_clazz?openId=${openId}`);
       let json = await response.json();
+      if (json.errno == 14) {
+        //未绑定登录
+        return redirectPassport();
+      }
       if (json.errno !== 0 && json.data) {
         return dispatch(sendMessage(json.errmsg));
       }
@@ -608,6 +616,10 @@ export function fetchNoticeList() {
     try {
       let response = await fetch(`/webservice/student/query_clazz?openId=${openId}`);
       let json = await response.json();
+      if (json.errno == 14) {
+        //未绑定登录
+        return redirectPassport();
+      }
       if (json.errno !== 0 && json.data) {
         return dispatch(sendMessage(json.errmsg));
       }

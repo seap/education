@@ -12,6 +12,7 @@ import {Card, CardHeader} from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
 
 import IconPDF from 'material-ui/svg-icons/image/picture-as-pdf';
+import IconAudio from 'material-ui/svg-icons/av/library-music';
 
 import Loader from '../components/Loader';
 import TitleRefresh from '../components/TitleRefresh';
@@ -39,7 +40,7 @@ class StuffDetail extends Component {
           <List>
             { stuff.stuff_attach.map((e, index) =>
               <a key={index} href={e.attach_url} ><ListItem key={index} primaryText={e.attach_name}
-                leftIcon={<IconPDF />}
+                leftIcon={e.attach_type == 'audio/mp3'? <IconAudio />: <IconPDF />}
               /></a> )}
           </List>
         </Card>
