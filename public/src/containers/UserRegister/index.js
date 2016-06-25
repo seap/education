@@ -14,7 +14,6 @@ import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 
-
 const style = {
   container: {
     position: 'relative',

@@ -291,9 +291,22 @@ router.get('/pay/request/:openId/:classId', async (req, res) => {
 
 //微信支付结果通知
 router.post('/pay/notify', async (req, res) => {
-  console.log('req.body: ', req.body);
   const success = '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
-  res.end(success);
+
+  req.rawBody = '';
+  let json = {};
+  req.setEncoding('utf8');
+
+  req.on('data', function(chunk) {
+    req.rawBody += chunk;
+  });
+  req.on('end', function() {
+    // json=xml2json.toJson(req.rawBody);
+    // res.send(JSON.stringify(json));
+    console.log(req.rawBody);
+    res.end(success);
+  });
+
 });
 
 //微信支付结果通知
