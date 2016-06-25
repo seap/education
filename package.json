@@ -96,7 +96,8 @@
     "redux-logger": "^2.6.1",
     "redux-thunk": "^2.0.1",
     "request": "^2.72.0",
-    "serve-favicon": "^2.3.0"
+    "serve-favicon": "^2.3.0",
+    "xml2json": "^0.9.1"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",

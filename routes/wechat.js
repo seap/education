@@ -2,6 +2,7 @@ import express from 'express';
 import crypto from 'crypto';
 import fetch from 'isomorphic-fetch';
 import request from 'request';
+import xml2json from 'xml2json';
 
 const router = express.Router();
 
@@ -294,26 +295,17 @@ router.post('/pay/notify', async (req, res) => {
   const success = '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
 
   req.rawBody = '';
-  let json = {};
   req.setEncoding('utf8');
-
   req.on('data', function(chunk) {
     req.rawBody += chunk;
   });
   req.on('end', function() {
-    // json=xml2json.toJson(req.rawBody);
+    json = xml2json.toJson(req.rawBody);
     // res.send(JSON.stringify(json));
-    console.log(req.rawBody);
+    console.log(json);
     res.end(success);
   });
 
-});
-
-//微信支付结果通知
-router.get('/pay/notify', async (req, res) => {
-  console.log('req.get: ', req.body);
-  const success = '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
-  res.end(success);
 });
 
 export default router;
