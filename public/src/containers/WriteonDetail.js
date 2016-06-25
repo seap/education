@@ -16,6 +16,7 @@ import {GridList, GridTile} from 'material-ui/GridList';
 
 import Loader from '../components/Loader';
 import TitleRefresh from '../components/TitleRefresh';
+import { dateFormat } from '../common/js/utility';
 
 class WriteonDetail extends Component {
   constructor() {
@@ -34,17 +35,19 @@ class WriteonDetail extends Component {
         <Card>
           <CardHeader
             title={writeon.writeon_name}
-            subtitle="2016-05-29"
+            subtitle={dateFormat(new Date(parseInt(writeon.create_date) * 1000), 'yyyy-MM-dd')}
           />
           <Divider />
+
           <GridList cellHeight={200} >
             {writeon.writeon_attach.map((tile, index) => (
+              <a href={tile.attach_url} >
               <GridTile
                 key={index}
-                title={tile.attach_name}
-              >
-                <img src="http://img5.imgtn.bdimg.com/it/u=3855783883,4282176542&fm=21&gp=0.jpg" />
+                title={tile.attach_name} >
+                <img src={tile.attach_url_small} />
               </GridTile>
+              </a>
             ))}
           </GridList>
 

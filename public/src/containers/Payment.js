@@ -123,6 +123,7 @@ class Payment extends Component {
     const { myInfo } = this.props.value.app;
     return (
        <MuiThemeProvider  muiTheme={ getMuiTheme({userAgent: this.props.value.userAgent}) }>
+         <Helmet title="学生付款" />
          <div style={style.container}>
          <AppBar
            title="学生付款"

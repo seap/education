@@ -16,6 +16,7 @@ import IconAudio from 'material-ui/svg-icons/av/library-music';
 
 import Loader from '../components/Loader';
 import TitleRefresh from '../components/TitleRefresh';
+import { dateFormat } from '../common/js/utility';
 
 class StuffDetail extends Component {
   constructor() {
@@ -34,7 +35,7 @@ class StuffDetail extends Component {
         <Card>
           <CardHeader
             title={stuff.stuff_name}
-            subtitle="2016-05-29"
+            subtitle={dateFormat(new Date(parseInt(stuff.create_date) * 1000), 'yyyy-MM-dd')}
           />
           <Divider />
           <List>
