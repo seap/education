@@ -133,7 +133,7 @@ class TaskList extends Component {
           <ListItem
             key={index}
             leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={task.status === 'nocom' ? blue500 : yellow500} />}
-            rightIcon={<IconCreate />}
+            rightIcon={task.status === 'nocom' ? <IconCreate /> : ''}
             primaryText={task.task_name}
             secondaryText={dateFormat(new Date(parseInt(task.create_date)*1000), 'yyyy-MM-dd')}
           />

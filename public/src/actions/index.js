@@ -195,92 +195,107 @@ export function deleteRecord(record) {
   }
 }
 
-function uploadVoicePromise(record) {
-  return new Promise((resolve, reject) => {
-    wx.uploadVoice({
-      localId: record.localId, // 需要上传的音频的本地ID，由stopRecord接口获得
-      isShowProgressTips: 1, // 默认为1，显示进度提示
-      success: function (res) {
-        // var serverId = res.serverId; // 返回音频的服务器端ID
-        record.serverId = res.serverId;
-        console.log('uploaded record : ', record); // 返回音频的服务器端ID
-        resolve(record);
-      },
-      fail: function(e) {
-        reject(e);
-      }
+export function deleteRemoteRecord(record) {
+  return (dispatch, getState) => {
+    dispatch({
+      type: ActionTypes.ACTION_TASK_REMOTE_RECORD_DELETE,
+      record
     });
+  }
+}
+
+// function uploadVoicePromise(record) {
+//   return new Promise((resolve, reject) => {
+//     wx.uploadVoice({
+//       localId: record.localId, // 需要上传的音频的本地ID，由stopRecord接口获得
+//       isShowProgressTips: 1, // 默认为1，显示进度提示
+//       success: function (res) {
+//         // var serverId = res.serverId; // 返回音频的服务器端ID
+//         record.serverId = res.serverId;
+//         console.log('uploaded record : ', record); // 返回音频的服务器端ID
+//         resolve(record);
+//       },
+//       fail: function(e) {
+//         reject(e);
+//       }
+//     });
+//   });
+// }
+
+var remoteRecords = [];
+function syncUploadVoice(records, callback) {
+  if (!records || records.length == 0) {
+    return callback();
+  }
+  var record = records.pop();
+  wx.uploadVoice({
+    localId: record.localId, // 需要上传的音频的本地ID，由stopRecord接口获得
+    isShowProgressTips: 1, // 默认为1，显示进度提示
+    success: function (res) {
+      // var serverId = res.serverId; // 返回音频的服务器端ID
+      record.serverId = res.serverId;
+      res.name = record.name;
+      remoteRecords.push(res);
+      if (records.length > 0){
+        syncUploadVoice(records, callback);
+      } else {
+        callback();
+      }
+    },
+    fail: function(e) {
+      reject(e);
+    }
   });
 }
 
-//保存当前作业
-export function saveTask(taskId) {
-  return async (dispatch, getState) => {
+// 提交保存保存当前作业， submitting为ture时，为提交作业
+export function saveTask(submitting) {
+  return (dispatch, getState) => {
     let openId = Cookies.get('openid');
     if (__DEVELOPMENT__) {
       openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
     }
-
     if (getState().app.isFetching) {
       return;
     }
-    dispatch(fetchRequest());
     let localRecordList = getState().app.localRecordList;
     if (localRecordList) {
-      // let promises = localRecordList.map((record) => uploadVoicePromise(record));
-      Promise.all(localRecordList.map(record => uploadVoicePromise(record)))
-      .then(async (record) => {
-        console.log('record result: ', record);
-
+      remoteRecords = [];
+      syncUploadVoice(localRecordList, async () => {
         try {
+          let newRecords = remoteRecords.concat(getState().app.currentTask.student_answers);
+          // console.log('newRecords ', newRecords);
           let data = new FormData();
           data.append('openId', openId);
           data.append('taskId', getState().app.currentTask.task_id);
-          data.append('studentAnswers', JSON.stringify(record));
-
-          let response = await fetch(`/webservice/student/save_task`, {
+          data.append('studentAnswers', JSON.stringify(newRecords));
+          let url = `/webservice/student/save_task`;
+          if (submitting) {
+            url = `/webservice/student/submit_task`;
+          }
+          let response = await fetch(url, {
             method: 'POST',
             body: data
-            // headers: {
-            //   'Accept': 'application/json',
-            //   'Content-Type': 'application/json'
-            // },
-            // body: JSON.stringify({
-            //   openId,
-            //   taskId: getState().app.currentTask.task_id,
-            //   studentAnswers: record
-            // })
           });
           let json = await response.json();
-          console.log('json: ', json);
           if (json.errno !== 0 && json.data) {
             return dispatch(sendMessage(json.errmsg));
           }
+          dispatch({
+            type: ActionTypes.ACTION_TASK_RECORD_SAVE,
+            payload: json.data
+          });
+          return dispatch(sendMessage(submitting ? '提交成功' : '保存成功！'));
         } catch (e) {
           dispatch(sendMessage('网络服务异常！'));
         }
-        dispatch(fetchComplete());
-      }).catch((e) => {
-        console.log('e: ', e);
-        dispatch(sendMessage('微信服务异常！'))
       });
-
-      // Promise.all(promises).then((res)=>{
-      //   console.log('res......., ', res);
-      // });
-      // let record = getState().app.localRecordList[0];
-      // console.log(record);
-      // wx.uploadVoice({
-      //   localId: record.localId, // 需要上传的音频的本地ID，由stopRecord接口获得
-      //   isShowProgressTips: 1, // 默认为1，显示进度提示
-      //   success: function (res) {
-      //     var serverId = res.serverId; // 返回音频的服务器端ID
-      //     console.log('serverId: ', serverId); // 返回音频的服务器端ID
-      //   }
-      // });
     }
-
   }
+}
+
+//提交当前作业
+export function submitTask() {
 }
 
 function allMyTaskLoaded(tasks) {
@@ -622,7 +637,6 @@ export function wxPayment() {
     try {
       let response = await fetch(`/wechat/pay/request/oUoJLv6jTegVkkRhXBnhq5XSvvBQ/1`);
       let json = await response.json();
-      console.log('pay json: ', json);
 
       function onBridgeReady(){
         WeixinJSBridge.invoke('getBrandWCPayRequest', json,

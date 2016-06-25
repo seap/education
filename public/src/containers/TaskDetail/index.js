@@ -40,14 +40,48 @@ class TaskDetail extends Component {
 
   playRemoteAudio(url) {
     let audioPlayer = this.refs.audio;
-    // audioPlayer.src = url;
-    audioPlayer.src = 'http://admin.siline.cn/uploads/1466827761863.mp3';
+    audioPlayer.src = url;
     audioPlayer.play();
   }
 
+  renderTaskOperation() {
+    const { currentTask, isRecording } = this.props.value.app;
+    const { startRecord, stopRecord, saveTask } = this.props.actions;
+
+    if (currentTask.status == 'nocom') {
+      return (
+        <CardActions style={{textAlign: 'center'}}>
+          <RaisedButton
+            label="开始录音"
+            icon={<IconMic />}
+            disabled={isRecording}
+            onClick={startRecord}
+            primary={true} />
+          <RaisedButton
+            label="结束录音"
+            icon={<IconMicOff />}
+            disabled={!isRecording}
+            onClick={stopRecord}
+            primary={true} />
+            <Divider style={{marginTop: 10, marginBottom: 10}}/>
+            <RaisedButton
+              label="保存作业"
+              icon={<IconSave />}
+              onClick={saveTask}
+              primary={true} />
+            <RaisedButton
+              label="提交作业"
+              icon={<IconSubmit />}
+              onClick={() => saveTask(true)}
+              primary={true} />
+        </CardActions>
+      );
+    }
+
+  }
   renderTaskDetail() {
     const { isRecording, currentTask, localRecordList } = this.props.value.app;
-    const { startRecord, stopRecord, playRecord, deleteRecord, saveTask, submitTask } = this.props.actions;
+    const { playRecord, deleteRecord, deleteRemoteRecord } = this.props.actions;
     if (currentTask) {
       return (
         <Card>
@@ -70,7 +104,7 @@ class TaskDetail extends Component {
                 primaryText={e.name}
                 leftIcon={<IconHearing />}
                 onTouchTap={() => this.playRemoteAudio(e.student_answer)}
-                rightIconButton={<FlatButton style={{height:48}} icon={<IconClear />} onClick={() => deleteRecord(e)} />} />
+                rightIconButton={currentTask.status == 'nocom'? <FlatButton style={{height:48}} icon={<IconClear />} onClick={() => deleteRemoteRecord(e)} /> : null} />
             )}
 
             { localRecordList.map((e, index) =>
@@ -82,34 +116,7 @@ class TaskDetail extends Component {
                 rightIconButton={<FlatButton style={{height:48}} icon={<IconClear />} onClick={() => deleteRecord(e)} />} />
             )}
           </List>
-          <CardActions style={{textAlign: 'center'}}>
-            <RaisedButton
-              label="开始录音"
-              icon={<IconMic />}
-              disabled={isRecording}
-              onClick={startRecord}
-              primary={true} />
-            <RaisedButton
-              label="结束录音"
-              icon={<IconMicOff />}
-              disabled={!isRecording}
-              onClick={stopRecord}
-              primary={true} />
-          </CardActions>
-
-          <Divider />
-          <CardActions style={{textAlign: 'center'}}>
-            <RaisedButton
-              label="保存作业"
-              icon={<IconSave />}
-              onClick={saveTask}
-              primary={true} />
-            <RaisedButton
-              label="提交作业"
-              icon={<IconSubmit />}
-              onClick={submitTask}
-              primary={true} />
-          </CardActions>
+          {this.renderTaskOperation()}
         </Card>
       );
     }

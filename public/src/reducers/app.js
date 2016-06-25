@@ -52,18 +52,29 @@ export default function app(state = initialState, action) {
       state.localRecordList.push(action.record);
       return Object.assign({}, state, {isRecording: false});
 
+    case ActionTypes.ACTION_TASK_RECORD_SAVE:
+    console.log(action.payload);
+      return Object.assign({}, state, {currentTask: action.payload, localRecordList:[], isFetching: false});
+
     case ActionTypes.ACTION_TASK_RECORD_DELETE:
       let localRecordList = state.localRecordList.filter(record =>
         record.localId != action.record.localId
       );
       return Object.assign({}, state, {localRecordList});
 
+    case ActionTypes.ACTION_TASK_REMOTE_RECORD_DELETE:
+      let student_answers = state.currentTask.student_answers.filter(record =>
+        record.name != action.record.name
+      );
+      state.currentTask.student_answers = student_answers;
+      return Object.assign({}, state);
+
     case ActionTypes.ACTION_WRITEON_DETAIL:
       return Object.assign({}, state, {writeon: action.payload, isFetching: false });
 
     case ActionTypes.ACTION_STUFF_DETAIL:
       return Object.assign({}, state, {stuff: action.payload, isFetching: false });
-      
+
     default:
       return state;
   }
