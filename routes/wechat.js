@@ -300,8 +300,8 @@ router.post('/pay/notify', async (req, res) => {
     req.rawBody += chunk;
   });
   req.on('end', function() {
-    console.log('rawBody: ', rawBody);
-    json = xml2json.toJson(req.rawBody);
+    console.log('rawBody: ', req.rawBody);
+    let json = xml2json.toJson(req.rawBody);
     // res.send(JSON.stringify(json));
     console.log('json: ', json);
     res.end(success);
