@@ -242,7 +242,7 @@ router.get('/pay/request/:openId/:classId', async (req, res) => {
   try {
     let order = {
       appid: config.appId,
-      attach: '班级支付',
+      attach: req.params.classId,
       body: '班级学费支付',
       mch_id: config.mchId,
       nonce_str: createNonceStr(),
@@ -291,20 +291,58 @@ router.get('/pay/request/:openId/:classId', async (req, res) => {
 });
 
 //微信支付结果通知
+// {
+//   "xml": {
+//     "appid": "wx95013eaa68c846c7",
+//     "attach": "班级支付",
+//     "bank_type": "CFT",
+//     "cash_fee": "1",
+//     "fee_type": "CNY",
+//     "is_subscribe": "Y",
+//     "mch_id": "1354735602",
+//     "nonce_str": "nbm1f40qid5f80k",
+//     "openid": "oUoJLv6jTegVkkRhXBnhq5XSvvBQ",
+//     "out_trade_no": "14668761006594",
+//     "result_code": "SUCCESS",
+//     "return_code": "SUCCESS",
+//     "sign": "FA7B5275162CB3DD2A3939EB317BCA0B",
+//     "time_end": "20160626013507",
+//     "total_fee": "1",
+//     "trade_type": "JSAPI",
+//     "transaction_id": "4002532001201606267890120919"
+//   }
+// }
 router.post('/pay/notify', async (req, res) => {
   const success = '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
-
+  const fail = '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[FAIL]]></return_msg></xml>';
   req.rawBody = '';
   req.setEncoding('utf8');
   req.on('data', function(chunk) {
     req.rawBody += chunk;
   });
-  req.on('end', function() {
-    console.log('rawBody: ', req.rawBody);
-    let json = xml2json.toJson(req.rawBody);
-    // res.send(JSON.stringify(json));
-    console.log('json: ', json);
-    res.end(success);
+  req.on('end', async () => {
+    try {
+      let json = xml2json.toJson(req.rawBody, {object: true});
+      if (json['xml'] && json['xml']['return_code'] == 'SUCCESS') {
+        let response = await fetch('http://w.siline.cn/webservice/student/order_success', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json;charset=utf-8'
+          },
+          body: JSON.stringify(json['xml'])
+        });
+        let resJson = await response.json();
+        console.log('resJson: ', resJson);
+        res.end(success);
+      } else {
+        console.log('fail pay notify', json);
+        res.end(fail);
+      }
+    } catch (e) {
+      console.log(e);
+      res.end(fail);
+    }
   });
 
 });
