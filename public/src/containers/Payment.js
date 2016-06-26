@@ -61,11 +61,12 @@ class Payment extends Component {
   }
 
   handleSubmit = () => {
+    const { classList } = this.props.value.app;
     const { isFetching, wxPayment } = this.props.actions;
     if (isFetching) {
       return;
     }
-    wxPayment();
+    wxPayment(classList[this.state.clazzIndex].id);
   }
 
   handleClose = () => {

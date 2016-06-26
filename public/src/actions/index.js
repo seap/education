@@ -642,13 +642,24 @@ export function fetchNoticeList() {
 }
 
 //微信支付
-export function wxPayment() {
+export function wxPayment(classId) {
   return async (dispatch, getState) => {
     if (getState().app.isFetching) {
       return;
     }
     try {
-      let response = await fetch(`/wechat/pay/request/oUoJLv6jTegVkkRhXBnhq5XSvvBQ/1`);
+      if (!classId) {
+        return dispatch(sendMessage('请选择支付班级！'));
+      }
+      let openId = Cookies.get('openid');
+      if (__DEVELOPMENT__) {
+        openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+      }
+      if (!openId) {
+        //未绑定登录
+        return redirectPassport();
+      }
+      let response = await fetch(`/wechat/pay/request/${openId}/${classId}`);
       let json = await response.json();
 
       function onBridgeReady(){
