@@ -324,7 +324,7 @@ router.post('/pay/notify', async (req, res) => {
     try {
       let json = xml2json.toJson(req.rawBody, {object: true});
       if (json['xml'] && json['xml']['return_code'] == 'SUCCESS') {
-        let response = await fetch('http://w.siline.cn/webservice/student/order_success', {
+        let response = await fetch('http://w.siline.cn/webservice/studentnew/order_success', {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
