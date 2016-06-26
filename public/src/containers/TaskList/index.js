@@ -9,8 +9,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import Dialog from 'material-ui/Dialog';
-
-import RaisedButton from 'material-ui/RaisedButton';
+import Divider from 'material-ui/Divider';
 import FlatButton from 'material-ui/FlatButton';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import {List, ListItem} from 'material-ui/List';
@@ -20,20 +19,12 @@ import IconCreate from 'material-ui/svg-icons/content/create';
 import IconSubmit from 'material-ui/svg-icons/image/navigate-next';
 import IconDone from 'material-ui/svg-icons/action/done';
 
-import Divider from 'material-ui/Divider';
-import FileFolder from 'material-ui/svg-icons/file/folder';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 import {blue500, yellow500, grey500} from 'material-ui/styles/colors';
-import EditorInsertChart from 'material-ui/svg-icons/editor/insert-chart';
-
-import Slider from 'material-ui/Slider';
-import styles from './main.scss';
 
 import DropDownMenu from 'material-ui/DropDownMenu';
-import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import Loader from '../../components/Loader';
-
 import { dateFormat } from '../../common/js/utility';
 
 const style = {
@@ -127,7 +118,7 @@ class TaskList extends Component {
   // 渲染当前作业
   renderCurrentTasks() {
     if (this.currentClass && this.currentClass.tasks) {
-      let currentTasks = this.currentClass.tasks.filter((task)=>task.status !== 'compl');
+      let currentTasks = this.currentClass.tasks.filter((task)=>task.status == 'nocom');
       if (currentTasks.length > 0) {
         return currentTasks.map((task, index) =>
           <Link key={index} to={`/task/detail/${task.task_id}`}>
@@ -143,7 +134,33 @@ class TaskList extends Component {
       } else {
         return (
           <div style={style.infoContainer}>
-            没有当前作业！
+            当前没有待提交作业！
+          </div>
+        )
+      }
+    }
+  }
+
+  // 渲染已提交当前作业
+  renderSubmittedTasks() {
+    if (this.currentClass && this.currentClass.tasks) {
+      let currentTasks = this.currentClass.tasks.filter((task)=>task.status == 'corre');
+      if (currentTasks.length > 0) {
+        return currentTasks.map((task, index) =>
+          <Link key={index} to={`/task/detail/${task.task_id}`}>
+          <ListItem
+            key={index}
+            leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={task.status === 'nocom' ? blue500 : yellow500} />}
+            rightIcon={task.status === 'nocom' ? <IconCreate /> : <IconSubmit />}
+            primaryText={task.task_name}
+            secondaryText={dateFormat(new Date(parseInt(task.create_date)*1000), 'yyyy-MM-dd')}
+          />
+          </Link>
+        )
+      } else {
+        return (
+          <div style={style.infoContainer}>
+            当前没有已提交作业！
           </div>
         )
       }
@@ -192,7 +209,13 @@ class TaskList extends Component {
           <Tab label="当前作业" >
             <div>
             <List>
+              <Subheader>未提交作业</Subheader>
               {this.renderCurrentTasks()}
+            </List>
+            <Divider />
+            <List>
+              <Subheader>已提交作业</Subheader>
+              {this.renderSubmittedTasks()}
             </List>
             </div>
           </Tab>
