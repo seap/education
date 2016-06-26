@@ -17,6 +17,7 @@ import {List, ListItem} from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 import Subheader from 'material-ui/Subheader';
 import IconCreate from 'material-ui/svg-icons/content/create';
+import IconSubmit from 'material-ui/svg-icons/image/navigate-next';
 import IconDone from 'material-ui/svg-icons/action/done';
 
 import Divider from 'material-ui/Divider';
@@ -133,7 +134,7 @@ class TaskList extends Component {
           <ListItem
             key={index}
             leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={task.status === 'nocom' ? blue500 : yellow500} />}
-            rightIcon={task.status === 'nocom' ? <IconCreate /> : ''}
+            rightIcon={task.status === 'nocom' ? <IconCreate /> : <IconSubmit />}
             primaryText={task.task_name}
             secondaryText={dateFormat(new Date(parseInt(task.create_date)*1000), 'yyyy-MM-dd')}
           />
