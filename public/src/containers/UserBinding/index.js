@@ -4,12 +4,15 @@ import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import { push } from 'react-router-redux';
 import * as IndexActions from '../../actions';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
+import Popover from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
+import MenuItem from 'material-ui/MenuItem';
 import Dialog from 'material-ui/Dialog';
-import RefreshIndicator from 'material-ui/RefreshIndicator';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
@@ -44,7 +47,8 @@ class UserBinding extends Component {
       password: '',
       remark: '',
       // studentNameError: '',
-      userIdError: ''
+      userIdError: '',
+      menuOpen: false
     };
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
@@ -73,15 +77,50 @@ class UserBinding extends Component {
     confirmMessage();
   }
 
+  handleMenuTouchTap = (event) => {
+    // This prevents ghost click.
+    event.preventDefault();
+    this.setState({
+      menuOpen: true,
+      anchorEl: event.currentTarget,
+    });
+  };
+
+  handleMenuRequestClose = () => {
+    this.setState({
+      menuOpen: false,
+    });
+  };
+
+  renderAppBar() {
+    const { push } = this.props;
+    return (
+      <div>
+      <Helmet title="帐号绑定" />
+      <AppBar
+        title="帐号绑定"
+        onLeftIconButtonTouchTap={this.handleMenuTouchTap}
+      />
+      <Popover
+       open={this.state.menuOpen}
+       anchorEl={this.state.anchorEl}
+       anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+       targetOrigin={{horizontal: 'left', vertical: 'top'}}
+       onRequestClose={this.handleMenuRequestClose} >
+       <Menu>
+         <MenuItem primaryText="帐号注册" onTouchTap={()=>{push('/register')}}/>
+       </Menu>
+      </Popover>
+      </div>
+    )
+  }
+
+
   render() {
     return (
        <MuiThemeProvider  muiTheme={ getMuiTheme({userAgent: this.props.value.userAgent}) }>
          <div style={style.container}>
-
-         <AppBar
-           title="帐号绑定"
-         />
-         <Helmet title="帐号绑定" />
+         {this.renderAppBar()}
          <div style={style.bindForm} >
          <TextField
            id="studentId"
@@ -159,8 +198,9 @@ UserBinding.propTypes = {
 
 const mapStateToProps = state => ({ value: state });
 
-const mapDispatchToProps = dispatch => (
-  { actions: bindActionCreators(IndexActions, dispatch) }
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(IndexActions, dispatch),
+  push: bindActionCreators(push, dispatch)}
 );
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserBinding);

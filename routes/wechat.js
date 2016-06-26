@@ -126,7 +126,6 @@ router.get('/token', async (req, res) => {
     let response = await fetch(`https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${config.appId}&secret=${config.appSecret}`);
     let json = await response.json();
     json.timestamp = timestamp;
-    console.log(json);
     cachedToken = json;
     res.json(json);
   } catch (e) {
@@ -148,7 +147,6 @@ router.get('/ticket', async (req, res) => {
     let response = await fetch(`https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${cachedToken.access_token}&type=jsapi`);
     let json = await response.json();
     json.timestamp = timestamp;
-    console.log(json);
     cachedTicket = json;
     res.json(json);
   } catch (e) {
@@ -181,8 +179,8 @@ router.get('/signature', async (req, res) => {
   }
   //重新生成签名
   signatureObj = createSignature(url, cachedTicket);
-  console.log('url:', url);
-  console.log(signatureObj);
+  // console.log('url:', url);
+  // console.log(signatureObj);
   cachedSignatures[url] = signatureObj;
   res.json(signatureObj);
 });
@@ -219,7 +217,7 @@ router.get('/redirect', async (req, res) => {
       // 已绑定
       res.cookie('openid', openid, { expires: new Date(Date.now() + 900000000) });
       res.cookie('nickname', nickname, { expires: new Date(Date.now() + 900000000) });
-      console.log('refer: ', req.cookies.referer);
+      // console.log('refer: ', req.cookies.referer);
       res.redirect(req.cookies.referer || config.baseUrl);
 
     } else if (json.errno === 1) {
@@ -333,7 +331,7 @@ router.post('/pay/notify', async (req, res) => {
           body: JSON.stringify(json['xml'])
         });
         let resJson = await response.json();
-        console.log('resJson: ', resJson);
+        // console.log('resJson: ', resJson);
         res.end(success);
       } else {
         console.log('fail pay notify', json);

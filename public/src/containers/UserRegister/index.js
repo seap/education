@@ -3,6 +3,7 @@ import Helmet from 'react-helmet';
 import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 import * as IndexActions from '../../actions';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -13,6 +14,10 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
+import Popover from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
+import MenuItem from 'material-ui/MenuItem';
+import Loader from '../../components/Loader';
 
 const style = {
   container: {
@@ -39,7 +44,8 @@ class UserRegister extends Component {
       phone: '',
       password: '',
       // studentNameError: '',
-      userIdError: ''
+      userIdError: '',
+      menuOpen: false
     };
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
@@ -60,36 +66,75 @@ class UserRegister extends Component {
     confirmMessage();
   }
 
+  handleMenuTouchTap = (event) => {
+    // This prevents ghost click.
+    event.preventDefault();
+    this.setState({
+      menuOpen: true,
+      anchorEl: event.currentTarget,
+    });
+  };
+
+  handleMenuRequestClose = () => {
+    this.setState({
+      menuOpen: false,
+    });
+  };
+
+  renderAppBar() {
+    const { push } = this.props;
+    return (
+      <div>
+      <Helmet title="帐号注册" />
+      <AppBar
+        title="帐号注册"
+        onLeftIconButtonTouchTap={this.handleMenuTouchTap}
+      />
+      <Popover
+       open={this.state.menuOpen}
+       anchorEl={this.state.anchorEl}
+       anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+       targetOrigin={{horizontal: 'left', vertical: 'top'}}
+       onRequestClose={this.handleMenuRequestClose} >
+       <Menu>
+         <MenuItem primaryText="帐号绑定" onTouchTap={()=>{push('/bind')}}/>
+       </Menu>
+      </Popover>
+      </div>
+    )
+  }
+
   render() {
     return (
        <MuiThemeProvider  muiTheme={ getMuiTheme({userAgent: this.props.value.userAgent}) }>
          <div style={style.container}>
-         <AppBar
-           title="帐号注册"
-         />
-         <Helmet title="帐号注册" />
+         {this.renderAppBar()}
          <div style={style.bindForm} >
          <TextField
           id="studentName"
-          hintText="学生姓名"
+          hintText="请输入学生姓名"
+          floatingLabelText="学生姓名"
           value={this.state.studentName}
           onChange={this.handleChange}
           fullWidth={true} />
         <TextField
          id="parentName"
-         hintText="家长姓名"
+         hintText="请输入家长姓名"
+         floatingLabelText="家长姓名"
          value={this.state.parentName}
          onChange={this.handleChange}
          fullWidth={true} />
          <TextField
            id="phone"
-           hintText="手机号"
+           hintText="请输入手机号"
+           floatingLabelText="手机号"
            value={this.state.phone}
            onChange={this.handleChange}
            fullWidth={true} />
          <TextField
            id="password"
-           hintText="密码"
+           hintText="请输入密码"
+           floatingLabelText="密码"
            value={this.state.password}
            onChange={this.handleChange}
            type="password"
@@ -132,17 +177,10 @@ class UserRegister extends Component {
   }
 
   renderLoading() {
-    if (this.props.value.app.isFetching) {
-      return (
-        <RefreshIndicator
-           size={40}
-           left={-20}
-           top={10}
-           status="loading"
-           style={style.refresh}
-         />
-      );
-    }
+    const { isFetching } = this.props.value.app;
+    return (
+      <Loader visible={ isFetching } />
+    );
   }
 }
 
@@ -151,8 +189,9 @@ UserRegister.propTypes = {
 
 const mapStateToProps = state => ({ value: state });
 
-const mapDispatchToProps = dispatch => (
-  { actions: bindActionCreators(IndexActions, dispatch) }
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(IndexActions, dispatch),
+  push: bindActionCreators(push, dispatch)}
 );
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserRegister);
