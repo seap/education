@@ -95,13 +95,14 @@ class WriteonList extends Component {
           />
           </Link>
         )
+      } else {
+        return (
+          <div style={style.infoContainer}>
+            当前没有课程板书！
+          </div>
+        )
       }
     }
-    return (
-      <div style={style.infoContainer}>
-        当前没有课程板书！
-      </div>
-    );
   }
 
   renderLoading() {
