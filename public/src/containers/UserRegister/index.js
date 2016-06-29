@@ -62,8 +62,13 @@ class UserRegister extends Component {
   }
 
   handleClose = () => {
+    const { registerSuccess } = this.props.value.app;
     const { confirmMessage } = this.props.actions;
+    const { push } = this.props;
     confirmMessage();
+    if (registerSuccess) {
+      push('/payment');
+    }
   }
 
   handleMenuTouchTap = (event) => {
@@ -154,10 +159,15 @@ class UserRegister extends Component {
   }
 
   renderDialog() {
-    const { message } = this.props.value.app;
+    const { message, registerSuccess, student } = this.props.value.app;
     if (!message) {
       return;
     }
+    let messageDesc = message;
+    if (registerSuccess) {
+      messageDesc = <div>{message}<p>您的学号：{student.student_no}</p></div>
+    }
+
     const actions = [
       <FlatButton
         label="确认"
@@ -171,7 +181,7 @@ class UserRegister extends Component {
           modal={true}
           open={true}
           onRequestClose={this.handleClose} >
-        {message}
+        {messageDesc}
       </Dialog>
     );
   }

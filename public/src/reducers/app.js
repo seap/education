@@ -4,6 +4,7 @@ const initialState = {
   isFetching: false,
   message: null,
   bindSuccess: false,
+  registerSuccess: false,
   myInfo:null,
   classList: [], //所有可支付班级
   myClasses: null,
@@ -22,15 +23,22 @@ export default function app(state = initialState, action) {
       return Object.assign({}, state, {message: null});
     case ActionTypes.ACTION_FETCH_REQUEST:
       return Object.assign({}, state, {isFetching: true});
+
     case ActionTypes.ACTION_FETCH_COMPLETE:
       return Object.assign({}, state, {isFetching: false});
 
     case ActionTypes.ACTION_BINDING_SUCCESS:
       return Object.assign({}, state, {isFetching: false, message: '绑定成功！', bindSuccess: true});
+
+    case ActionTypes.ACTION_REGISTER_SUCCESS:
+      return Object.assign({}, state, {isFetching: false, message: '注册成功！', registerSuccess: true, student: action.payload});
+
     case ActionTypes.ACTION_MY_INFO_LOAD:
       return Object.assign({}, state, {myInfo: action.payload});
+
     case ActionTypes.ACTION_CLASS_LIST_LOAD:
       return Object.assign({}, state, {classList: action.payload});
+
     case ActionTypes.ACTION_MY_CLASS_LOADED:
       return Object.assign({}, state, {myClasses: action.classes});
 

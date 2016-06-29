@@ -53,6 +53,15 @@ export function bindSuccess() {
     type: ActionTypes.ACTION_BINDING_SUCCESS
   }
 }
+
+// 注册成功
+export function registerSuccess(student) {
+  return {
+    type: ActionTypes.ACTION_REGISTER_SUCCESS,
+    payload: student
+  }
+}
+
 // 注册
 export function register(data) {
   return async (dispatch, getState) => {
@@ -72,9 +81,30 @@ export function register(data) {
     if (!data.password) {
       return dispatch(sendMessage('请输入密码！'));
     }
-    dispatch(fetchRequest());
+
+    if (!/^1\d{10}$/.test(data.phone)) {
+      return dispatch(sendMessage('请输入正确的手机号！'));
+    }
 
     //return dispatch(sendMessage('服务异常！'));
+    const openid = Cookies.get('openid');
+    const nickname = Cookies.get('nickname');
+    if (!openid) {
+      return dispatch(sendMessage('微信服务异常，请稍后再试！'));
+    }
+    dispatch(fetchRequest());
+    try {
+      let response = await fetch(`/webservice/account/register?studentName=${data.studentName}&parentName=${data.parentName}&phone=${data.phone}&password=${data.password}&openId=${openid}&nickname=${nickname}`);
+      let json = await response.json();
+      if (json.errno != 0) {
+        return dispatch(sendMessage(json.errmsg));
+      }
+      // 注册成功
+      Cookies.set('studentid', json.data.student_no);
+      dispatch(registerSuccess(json.data));
+    } catch (e) {
+      return dispatch(sendMessage('服务异常'));
+    }
   }
 }
 
