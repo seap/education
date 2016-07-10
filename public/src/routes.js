@@ -37,6 +37,14 @@ function routes(store){
     }
   };
 
+  //修改密码
+  const password = {
+    path: '/password',
+    getComponent(location, callback) {
+      require.ensure([], require => callback(null, require('./containers/Password').default));
+    }
+  };
+
   //我的作业
   const taskList = {
     path: '/task/list',
@@ -116,7 +124,7 @@ function routes(store){
     getIndexRoute(location, callback) {
       require.ensure([], require => callback(null, {component: require('./containers/Login').default}));
     },
-    childRoutes: [bind, memberInfo, register, payment, taskList, taskDetail, writeonList, writeonDetail, stuffList, stuffDetail, noticeList, noticeDetail, notFoundPage]
+    childRoutes: [bind, memberInfo, password, register, payment, taskList, taskDetail, writeonList, writeonDetail, stuffList, stuffDetail, noticeList, noticeDetail, notFoundPage]
   };
 
   return rootRoute;
