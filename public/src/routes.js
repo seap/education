@@ -29,6 +29,14 @@ function routes(store){
     }
   };
 
+  //个人信息
+  const memberInfo = {
+    path: '/member',
+    getComponent(location, callback) {
+      require.ensure([], require => callback(null, require('./containers/MemberInfo').default));
+    }
+  };
+
   //我的作业
   const taskList = {
     path: '/task/list',
@@ -108,7 +116,7 @@ function routes(store){
     getIndexRoute(location, callback) {
       require.ensure([], require => callback(null, {component: require('./containers/Login').default}));
     },
-    childRoutes: [bind, register, payment, taskList, taskDetail, writeonList, writeonDetail, stuffList, stuffDetail, noticeList, noticeDetail, notFoundPage]
+    childRoutes: [bind, memberInfo, register, payment, taskList, taskDetail, writeonList, writeonDetail, stuffList, stuffDetail, noticeList, noticeDetail, notFoundPage]
   };
 
   return rootRoute;
