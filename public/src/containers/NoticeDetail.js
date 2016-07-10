@@ -8,7 +8,9 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {Card, CardHeader, CardTitle, CardText} from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
-
+import {List, ListItem} from 'material-ui/List';
+import IconPDF from 'material-ui/svg-icons/image/picture-as-pdf';
+import IconAudio from 'material-ui/svg-icons/av/library-music';
 import Loader from '../components/Loader';
 import TitleRefresh from '../components/TitleRefresh';
 import { dateFormat } from '../common/js/utility';
@@ -41,6 +43,11 @@ class NoticeDetail extends Component {
                   <CardText>
                     {notice.context}
                   </CardText>
+                  <List>
+                    <a href={notice.attach_url} ><ListItem primaryText={"通知附件"}
+                      leftIcon={notice.attach_type == 'audio/mp3'? <IconAudio />: <IconPDF />}
+                    /></a>
+                  </List>
                 </Card>
               );
             }

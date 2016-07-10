@@ -172,7 +172,7 @@ export function wxConfig() {
 }
 
 function addLocalRecord(record) {
-  record.name = dateFormat(new Date(), 'yyyy-MM-dd hh:mm:ss');
+  record.name = 'voice ' + dateFormat(new Date(), 'yyyy-MM-dd hh:mm:ss');
   return {
     type: ActionTypes.ACTION_TASK_RECORD_STOP,
     record
