@@ -754,3 +754,37 @@ export function modifyPassword(obj) {
     }
   }
 }
+
+export function modifyPhone(phone) {
+  return async (dispatch, getState) => {
+    if (getState().app.isFetching) {
+      return;
+    }
+    if (!phone) {
+      return dispatch(sendMessage('请输入新手机号！'));
+    }
+    if (!/^1\d{10}$/.test(phone)) {
+      return dispatch(sendMessage('请输入正确的手机号！'));
+    }
+    try {
+      let openId = Cookies.get('openid');
+      if (__DEVELOPMENT__) {
+        openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+      }
+      if (!openId) {
+        //未绑定登录
+        return redirectPassport();
+      }
+      let response = await fetch(`/webservice/student/update_phone?openId=${openId}&phone=${phone}`);
+      let json = await response.json();
+      if (json.errno === 0) {
+        return dispatch(sendMessage('修改成功！'));
+      } else {
+        return dispatch(sendMessage(json.errmsg));
+      }
+
+    } catch (e) {
+      dispatch(sendMessage('网络服务异常！'));
+    }
+  }
+}
