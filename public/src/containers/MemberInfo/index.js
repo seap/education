@@ -84,6 +84,13 @@ class MemberInfo extends Component {
           disabled={true}
           fullWidth={true} />
         <TextField
+          id="className"
+          inputStyle={style.item}
+          floatingLabelText="所在班级"
+          value={myInfo.clazz_name}
+          disabled={true}
+          fullWidth={true} />
+        <TextField
           id="phone"
           inputStyle={style.item}
           floatingLabelText="联系电话"
