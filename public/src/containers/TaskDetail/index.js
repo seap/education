@@ -30,12 +30,34 @@ import { dateFormat } from '../../common/js/utility';
 class TaskDetail extends Component {
   constructor() {
     super();
+    this.state = {
+      countor: null
+    };
+    this.isCounting = false; //是否启动倒计时
   }
 
   componentDidMount() {
     const { fetchTaskDetail, wxConfig} = this.props.actions;
     wxConfig && wxConfig();
     fetchTaskDetail && fetchTaskDetail(this.props.params);
+  }
+
+  //倒计时
+  countdown() {
+    this.isCounting = true;
+    this.state.countor = 60;
+    this.timer = setInterval(() => {
+      let countor = this.state.countor;
+      if (countor > 0) {
+        this.setState({
+          countor: --countor
+        });
+      } else {
+        clearInterval(this.timer);
+        this.timer = null;
+        this.isCounting = false;
+      }
+    }, 1000);
   }
 
   playRemoteAudio(url) {
@@ -47,6 +69,14 @@ class TaskDetail extends Component {
   renderTaskOperation() {
     const { currentTask, isRecording } = this.props.value.app;
     const { startRecord, stopRecord, saveTask } = this.props.actions;
+    if (isRecording && !this.isCounting) {
+      this.countdown();
+    }
+    if (!isRecording && this.isCounting) {
+      this.timer && clearInterval(this.timer);
+      this.timer = null;
+      this.isCounting = false;
+    }
 
     if (currentTask.status == 'nocom') {
       return (
@@ -58,7 +88,7 @@ class TaskDetail extends Component {
             onClick={startRecord}
             primary={true} />
           <RaisedButton
-            label="结束录音"
+            label={isRecording ? `结束录音(${this.state.countor})` : '结束录音' }
             icon={<IconMicOff />}
             disabled={!isRecording}
             onClick={stopRecord}
