@@ -345,4 +345,46 @@ router.post('/pay/notify', async (req, res) => {
 
 });
 
+
+//微信模板消息
+router.get('/postmessage', async (req, res) => {
+  var jsonObj = {
+    touser: 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ',
+    template_id : 'qLlauF3scaD5ZCC6iQa9ZXdFgtFST51Rvovlca5-v-w',
+    url: 'http://w.siline.cn/notice/detail/1',
+    topcolor: '#FF0000',
+    data: {
+      first: {
+        value: '班级通知'
+      },
+      keyword1: {
+        value: 'xxx'
+      },
+      keyword2: {
+        value: 'xxx'
+      },
+      keyword3: {
+        value: 'xxx'
+      },
+      keyword4: {
+        value: 'xxx'
+      },
+      remark: {
+        value: 'xxx'
+      }
+    }
+  };
+
+  let response = await fetch(`https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=${cachedToken.access_token}`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json;charset=utf-8'
+    },
+    body: JSON.stringify(jsonObj)
+  });
+  let json = await response.json();
+  return res.json(json);
+});
+
 export default router;
