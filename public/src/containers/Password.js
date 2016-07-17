@@ -53,6 +53,8 @@ class Payment extends Component {
   }
 
   handleSubmit = () => {
+    const { modifyPassword } = this.props.actions;
+    modifyPassword(this.state);
   }
 
   handleClose = () => {

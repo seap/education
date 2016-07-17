@@ -720,3 +720,37 @@ export function wxPayment(classId) {
     }
   }
 }
+
+export function modifyPassword(obj) {
+  return async (dispatch, getState) => {
+    if (getState().app.isFetching) {
+      return;
+    }
+    if (!obj.oldPassword || !obj.newPassword || !obj.newPasswordConfirm) {
+      return dispatch(sendMessage('请输入密码！'));
+    }
+    if (obj.newPassword !== obj.newPasswordConfirm) {
+      return dispatch(sendMessage('确认密码不一致！'));
+    }
+    try {
+      let openId = Cookies.get('openid');
+      if (__DEVELOPMENT__) {
+        openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+      }
+      if (!openId) {
+        //未绑定登录
+        return redirectPassport();
+      }
+      let response = await fetch(`/webservice/student/update_password?openId=${openId}&newpwd=${obj.newPassword}&oldpwd=${obj.oldPassword}`);
+      let json = await response.json();
+      if (json.errno === 0) {
+        return dispatch(sendMessage('修改成功！'));
+      } else {
+        return dispatch(sendMessage(json.errmsg));
+      }
+
+    } catch (e) {
+      dispatch(sendMessage('网络服务异常！'));
+    }
+  }
+}
