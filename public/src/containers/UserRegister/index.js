@@ -67,7 +67,7 @@ class UserRegister extends Component {
     const { push } = this.props;
     confirmMessage();
     if (registerSuccess) {
-      push('/payment');
+      push('/task/list');
     }
   }
 

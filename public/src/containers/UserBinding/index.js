@@ -68,11 +68,12 @@ class UserBinding extends Component {
   }
 
   handleClose = () => {
+    const { push } = this.props;
     const { confirmMessage } = this.props.actions;
     const { bindSuccess } = this.props.value.app;
     if (bindSuccess) {
       // refer页面
-      window.location.href = 'http://w.siline.cn/task/list';
+      push('task/list');
     }
     confirmMessage();
   }
