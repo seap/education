@@ -150,7 +150,7 @@ export function wxConfig() {
       if (__DEVELOPMENT__) {
         response = await fetch(`/wechat/signature?url=${encodeURIComponent(window.location.href)}`);
       } else {
-        response = await fetch(`/wechat/signature?url=${encodeURIComponent('http://w.siline.cn/task/list')}`);
+        response = await fetch(`/wechat/signature?url=${encodeURIComponent('http://w.jenniferstudio.cn/task/list')}`);
       }
       let json = await response.json();
       wx.config({
