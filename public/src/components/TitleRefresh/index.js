@@ -9,7 +9,7 @@ export default class TitleRefresh extends Component {
   }
   componentDidMount() {
     if (this.iframe) {
-      this.iframe.src = 'http://w.siline.cn/favicon.ico';
+      this.iframe.src = 'http://w.jenniferstudio.cn/favicon.ico';
     }
   }
   render() {

@@ -7,7 +7,7 @@ import { dateFormat, param } from '../common/js/utility';
 
 //登录跳转
 function redirectPassport() {
-  window.location.href = `http://w.siline.cn/wechat/login?referer=${encodeURIComponent(window.location.href)}`;
+  window.location.href = `http://w.jenniferstudio.cn/wechat/login?referer=${encodeURIComponent(window.location.href)}`;
 }
 
 // 重置state
