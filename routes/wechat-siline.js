@@ -8,11 +8,11 @@ const router = express.Router();
 
 // 微信配置
 const config = {
-    baseUrl: 'http://w.jenniferstudio.cn',
-    redirectUrl: 'http://w.jenniferstudio.cn/wechat/redirect',
+    baseUrl: 'http://w.siline.cn',
+    redirectUrl: 'http://w.siline.cn/wechat/redirect',
     token: 'seayangtoken',
-    appId: 'wx959feca69d5ba361',
-    appSecret: 'a54c117815bb10944bc60125f8910cee',
+    appId: 'wx95013eaa68c846c7',
+    appSecret: 'fc697dc4bc4e077a3ea4adb823caf69a',
     encodingAESKey: 'QHhz7I8hHAGafbNxx40MLMtE2jOcfBJ6Ctcg1bpDXsM',
     mchId: '1354735602', //微信支付分配的商户号
     apiKey: 'ijamao9034903ksadkdsadjaklaDaADA'
@@ -244,7 +244,7 @@ router.get('/pay/request/:openId/:classId', async (req, res) => {
       body: '班级学费支付',
       mch_id: config.mchId,
       nonce_str: createNonceStr(),
-      notify_url: 'http://w.jenniferstudio.cn/wechat/pay/notify',
+      notify_url: 'http://w.siline.cn/wechat/pay/notify',
       openid: req.params.openId,
       out_trade_no: createOrderId(),
       spbill_create_ip: '121.225.151.4',
@@ -322,7 +322,7 @@ router.post('/pay/notify', async (req, res) => {
     try {
       let json = xml2json.toJson(req.rawBody, {object: true});
       if (json['xml'] && json['xml']['return_code'] == 'SUCCESS') {
-        let response = await fetch('http://w.jenniferstudio.cn/webservice/studentnew/order_success', {
+        let response = await fetch('http://w.siline.cn/webservice/studentnew/order_success', {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
@@ -351,7 +351,7 @@ router.get('/postmessage', async (req, res) => {
   var jsonObj = {
     touser: 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ',
     template_id : 'qLlauF3scaD5ZCC6iQa9ZXdFgtFST51Rvovlca5-v-w',
-    url: 'http://w.jenniferstudio.cn/notice/list',
+    url: 'http://w.siline.cn/notice/detail/1',
     topcolor: '#FF0000',
     data: {
       first: {
