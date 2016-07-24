@@ -57,7 +57,7 @@
       "command": "webpack --verbose --colors --progress --display-error-details --config webpack/build",
       "env": {
         "NODE_ENV": "development",
-        "HOST": "w.siline.cn",
+        "HOST": "www.jenniferstudio.cn",
         "PORT": "3000",
         "PUBLIC_PATH": "dist"
       }
