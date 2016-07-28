@@ -41,7 +41,7 @@ class NoticeDetail extends Component {
                   />
                   <Divider />
                   <CardText>
-                    {notice.context}
+                    <div dangerouslySetInnerHTML={__html: {notice.context}} />
                   </CardText>
                   <List>
                     <a href={notice.attach_url} ><ListItem primaryText={"通知附件"}
