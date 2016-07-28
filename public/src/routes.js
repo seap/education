@@ -111,7 +111,7 @@ function routes(store){
 
   //公告详情
   const noticeDetail = {
-    path: '/notice/detail/:classId/:noticeId',
+    path: '/notice/detail/:noticeId',
     getComponent(location, callback) {
       require.ensure([], require => callback(null, require('./containers/NoticeDetail').default));
     }

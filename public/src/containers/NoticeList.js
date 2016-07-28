@@ -86,7 +86,7 @@ class NoticeList extends Component {
       let currentList = this.currentClass.notices;
       if (currentList.length > 0) {
         return currentList.map((notice, index) =>
-          <Link key={index} to={`/notice/detail/${this.currentClass.clazz_id}/${notice.id}`}>
+          <Link key={index} to={`/notice/detail/${notice.id}`}>
           <ListItem
             key={index}
             leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={grey500} />}

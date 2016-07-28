@@ -82,7 +82,8 @@ export default function app(state = initialState, action) {
 
     case ActionTypes.ACTION_STUFF_DETAIL:
       return Object.assign({}, state, {stuff: action.payload, isFetching: false });
-
+    case ActionTypes.ACTION_NOTICE_DETAIL:
+      return Object.assign({}, state, {notice: action.payload, isFetching: false });
     default:
       return state;
   }

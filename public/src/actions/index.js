@@ -671,6 +671,37 @@ export function fetchNoticeList() {
   }
 }
 
+//查询通知列表
+export function fetchNoticeDetail(noticeId) {
+  return async (dispatch, getState) => {
+    if (getState().app.isFetching) {
+      return;
+    }
+    let openId = Cookies.get('openid');
+    if (__DEVELOPMENT__) {
+      openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    }
+    if (!openId) {
+      //未绑定登录
+      return redirectPassport();
+    }
+    dispatch(fetchRequest());
+    try {
+      let response = await fetch(`/webservice/clazz/query_clazz_notice?openId=${openId}&noticeId=${noticeId}`);
+      let json = await response.json();
+      if (json.errno !== 0 && json.data) {
+        return dispatch(sendMessage(json.errmsg));
+      }
+      dispatch({
+        type: ActionTypes.ACTION_NOTICE_DETAIL,
+        payload: json.data
+      });
+    } catch (e) {
+      dispatch(sendMessage('网络服务异常！'));
+    }
+  }
+}
+
 //微信支付
 export function wxPayment(classId) {
   return async (dispatch, getState) => {

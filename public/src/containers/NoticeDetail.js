@@ -21,40 +21,28 @@ class NoticeDetail extends Component {
   }
 
   componentDidMount() {
+    const { fetchNoticeDetail, wxConfig} = this.props.actions;
+    fetchNoticeDetail && fetchNoticeDetail(this.props.params.noticeId);
   }
-
   renderNoticeDetail() {
-    const {classId, noticeId} = this.props.params;
-    const { myClasses } = this.props.value.app;
-    if (myClasses) {
-      for (let i = 0; i < myClasses.length; i++) {
-        if (myClasses[i].clazz_id == classId) {
-          let notices = myClasses[i].notices;
-          for (let j = 0; j < notices.length; j++) {
-            if (notices[j].id == noticeId) {
-              const notice = notices[j];
-              return (
-                <Card>
-                  <CardHeader
-                    title={notice.name}
-                    subtitle={dateFormat(new Date(parseInt(notice.create_date) * 1000), 'yyyy-MM-dd')}
-                  />
-                  <Divider />
-                  <CardText>
-                    <div dangerouslySetInnerHTML={{__html: notice.context}} />
-                  </CardText>
-                  <List>
-                    <a href={notice.attach_url} ><ListItem primaryText={"通知附件"}
-                      leftIcon={notice.attach_type == 'audio/mp3'? <IconAudio />: <IconPDF />}
-                    /></a>
-                  </List>
-                </Card>
-              );
-            }
-          }
-        }
-      }
-    }
+    const { notice } = this.props.value.app;
+    return (
+      <Card>
+        <CardHeader
+          title={notice.name}
+          subtitle={dateFormat(new Date(parseInt(notice.create_date) * 1000), 'yyyy-MM-dd')}
+        />
+        <Divider />
+        <CardText>
+          <div dangerouslySetInnerHTML={{__html: notice.context}} />
+        </CardText>
+        <List>
+          <a href={notice.attach_url} ><ListItem primaryText={"通知附件"}
+            leftIcon={notice.attach_type == 'audio/mp3'? <IconAudio />: <IconPDF />}
+          /></a>
+        </List>
+      </Card>
+    );
   }
 
   renderLoading() {
