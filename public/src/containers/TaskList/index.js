@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import Helmet from 'react-helmet';
 import * as IndexActions from '../../actions';
+import { push } from 'react-router-redux';
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -23,6 +24,8 @@ import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 import {blue500, yellow500, grey500} from 'material-ui/styles/colors';
 
 import DropDownMenu from 'material-ui/DropDownMenu';
+import Popover from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import Loader from '../../components/Loader';
 import { dateFormat } from '../../common/js/utility';
@@ -40,7 +43,8 @@ class TaskList extends Component {
     this.myTasks = null;
     this.currentClass = null;
     this.state = {
-      classIndex: 0
+      classIndex: 0,
+      menuOpen: false
     }
   }
 
@@ -197,13 +201,50 @@ class TaskList extends Component {
     );
   }
 
+  handleMenuTouchTap = (event) => {
+    // This prevents ghost click.
+    event.preventDefault();
+    this.setState({
+      menuOpen: true,
+      anchorEl: event.currentTarget,
+    });
+  };
+
+  handleMenuRequestClose = () => {
+    this.setState({
+      menuOpen: false,
+    });
+  };
+
+  renderMenu() {
+    const { push } = this.props;
+    return (
+      <Popover
+         open={this.state.menuOpen}
+         anchorEl={this.state.anchorEl}
+         anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+         targetOrigin={{horizontal: 'left', vertical: 'top'}}
+         onRequestClose={this.handleMenuRequestClose} >
+         <Menu>
+           <MenuItem primaryText="课程板书" onTouchTap={()=>{push('/writeon/list')}}/>
+           <MenuItem primaryText="辅导材料" onTouchTap={()=>{push('/stuff/list')}}/>
+           <MenuItem primaryText="班级通告" onTouchTap={()=>{push('/notice/list')}}/>
+         </Menu>
+      </Popover>
+    );
+  }
+
   render() {
     return (
       <div>
         <Helmet title="我的作业" />
         <MuiThemeProvider muiTheme={ getMuiTheme({userAgent: this.props.value.userAgent}) }>
         <div>
-          <AppBar title="我的作业" />
+          <AppBar
+            title="我的作业"
+            onLeftIconButtonTouchTap={this.handleMenuTouchTap}
+          />
+          {this.renderMenu()}
           {this.renderMyClasses()}
           <Tabs>
           <Tab label="当前作业" >
@@ -237,8 +278,10 @@ TaskList.propTypes = {
 
 const mapStateToProps = state => ({ value: state });
 
-const mapDispatchToProps = dispatch => (
-  { actions: bindActionCreators(IndexActions, dispatch) }
+const mapDispatchToProps = dispatch => ({
+    actions: bindActionCreators(IndexActions, dispatch),
+    push: bindActionCreators(push, dispatch)
+   }
 );
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskList);

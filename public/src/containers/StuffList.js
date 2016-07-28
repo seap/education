@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import Helmet from 'react-helmet';
 import * as IndexActions from '../actions';
+import { push } from 'react-router-redux';
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -19,7 +20,8 @@ import Divider from 'material-ui/Divider';
 import FileFolder from 'material-ui/svg-icons/file/folder';
 import ActionAssignment from 'material-ui/svg-icons/file/folder';
 import {grey500} from 'material-ui/styles/colors';
-
+import Popover from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -39,7 +41,8 @@ class StuffList extends Component {
     super();
     this.currentClass = null;
     this.state = {
-      classIndex: 0
+      classIndex: 0,
+      menuOpen: false
     }
   }
 
@@ -116,13 +119,50 @@ class StuffList extends Component {
     );
   }
 
+  handleMenuTouchTap = (event) => {
+    // This prevents ghost click.
+    event.preventDefault();
+    this.setState({
+      menuOpen: true,
+      anchorEl: event.currentTarget,
+    });
+  };
+
+  handleMenuRequestClose = () => {
+    this.setState({
+      menuOpen: false,
+    });
+  };
+
+  renderMenu() {
+    const { push } = this.props;
+    return (
+      <Popover
+         open={this.state.menuOpen}
+         anchorEl={this.state.anchorEl}
+         anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+         targetOrigin={{horizontal: 'left', vertical: 'top'}}
+         onRequestClose={this.handleMenuRequestClose} >
+         <Menu>
+           <MenuItem primaryText="我的作业" onTouchTap={()=>{push('/task/list')}}/>
+           <MenuItem primaryText="课程板书" onTouchTap={()=>{push('/writeon/list')}}/>
+           <MenuItem primaryText="班级通告" onTouchTap={()=>{push('/notice/list')}}/>
+         </Menu>
+      </Popover>
+    );
+  }
+
   render() {
     return (
       <div>
         <Helmet title="辅导材料" />
         <MuiThemeProvider muiTheme={ getMuiTheme({userAgent: this.props.value.userAgent}) }>
         <div>
-          <AppBar title="辅导材料" />
+          <AppBar
+            title="辅导材料"
+            onLeftIconButtonTouchTap={this.handleMenuTouchTap}
+          />
+          {this.renderMenu()}
           {this.renderMyClasses()}
           <List>
           {this.renderStuffList()}
@@ -140,8 +180,9 @@ StuffList.propTypes = {
 
 const mapStateToProps = state => ({ value: state });
 
-const mapDispatchToProps = dispatch => (
-  { actions: bindActionCreators(IndexActions, dispatch) }
+const mapDispatchToProps = dispatch => ({
+    actions: bindActionCreators(IndexActions, dispatch),
+    push: bindActionCreators(push, dispatch)
+   }
 );
-
 export default connect(mapStateToProps, mapDispatchToProps)(StuffList);
