@@ -142,9 +142,9 @@ class NoticeList extends Component {
          targetOrigin={{horizontal: 'left', vertical: 'top'}}
          onRequestClose={this.handleMenuRequestClose} >
          <Menu>
-           <MenuItem primaryText="我的作业" onTouchTap={()=>{push('/task/list')}}/>
-           <MenuItem primaryText="课程板书" onTouchTap={()=>{push('/writeon/list')}}/>
-           <MenuItem primaryText="辅导材料" onTouchTap={()=>{push('/stuff/list')}}/>
+           <MenuItem primaryText="我的作业" onClick={()=>{push('/task/list')}}/>
+           <MenuItem primaryText="课程板书" onClick={()=>{push('/writeon/list')}}/>
+           <MenuItem primaryText="辅导材料" onClick={()=>{push('/stuff/list')}}/>
          </Menu>
       </Popover>
     );

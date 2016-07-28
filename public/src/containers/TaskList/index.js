@@ -226,9 +226,9 @@ class TaskList extends Component {
          targetOrigin={{horizontal: 'left', vertical: 'top'}}
          onRequestClose={this.handleMenuRequestClose} >
          <Menu>
-           <MenuItem primaryText="课程板书" onTouchTap={()=>{push('/writeon/list')}}/>
-           <MenuItem primaryText="辅导材料" onTouchTap={()=>{push('/stuff/list')}}/>
-           <MenuItem primaryText="班级通告" onTouchTap={()=>{push('/notice/list')}}/>
+           <MenuItem primaryText="课程板书" onClick={()=>{push('/writeon/list')}}/>
+           <MenuItem primaryText="辅导材料" onClick={()=>{push('/stuff/list')}}/>
+           <MenuItem primaryText="班级通告" onClick={()=>{push('/notice/list')}}/>
          </Menu>
       </Popover>
     );
