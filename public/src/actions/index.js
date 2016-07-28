@@ -689,7 +689,7 @@ export function fetchNoticeDetail(noticeId) {
     try {
       let response = await fetch(`/webservice/clazz/query_clazz_notice?openId=${openId}&noticeId=${noticeId}`);
       let json = await response.json();
-      if (json.errno !== 0 && json.data) {
+      if (json.errno !== 0 || !json.data) {
         return dispatch(sendMessage(json.errmsg));
       }
       dispatch({
