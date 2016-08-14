@@ -29,6 +29,14 @@ function routes(store){
     }
   };
 
+  //报名
+  const enroll = {
+    path: '/enroll',
+    getComponent(location, callback) {
+      require.ensure([], require => callback(null, require('./containers/Enroll').default));
+    }
+  };
+
   //个人信息
   const memberInfo = {
     path: '/member',
@@ -132,7 +140,7 @@ function routes(store){
     getIndexRoute(location, callback) {
       require.ensure([], require => callback(null, {component: require('./containers/Login').default}));
     },
-    childRoutes: [bind, memberInfo, password, phone, register, payment, taskList, taskDetail, writeonList, writeonDetail, stuffList, stuffDetail, noticeList, noticeDetail, notFoundPage]
+    childRoutes: [bind, memberInfo, password, enroll, phone, register, payment, taskList, taskDetail, writeonList, writeonDetail, stuffList, stuffDetail, noticeList, noticeDetail, notFoundPage]
   };
 
   return rootRoute;

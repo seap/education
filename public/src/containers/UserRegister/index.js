@@ -138,7 +138,7 @@ class UserRegister extends Component {
            fullWidth={true} />
          <TextField
            id="password"
-           hintText="请输入密码"
+           hintText="请设置密码"
            floatingLabelText="密码"
            value={this.state.password}
            onChange={this.handleChange}
