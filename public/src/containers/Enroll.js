@@ -4,6 +4,7 @@ import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import { push } from 'react-router-redux';
 import * as IndexActions from '../actions';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -54,7 +55,6 @@ class Enroll extends Component {
   }
 
   handleClassChange = (event, index, value) => {
-    console.log(index);
     this.setState({
       clazzIndex: index
     })
@@ -62,16 +62,20 @@ class Enroll extends Component {
 
   handleSubmit = () => {
     const { classList } = this.props.value.app;
-    const { isFetching, wxPayment } = this.props.actions;
+    const { isFetching, enroll } = this.props.actions;
     if (isFetching) {
       return;
     }
-    wxPayment(classList[this.state.clazzIndex].id);
+    enroll(classList[this.state.clazzIndex].id);
   }
 
   handleClose = () => {
     const { confirmMessage } = this.props.actions;
+    const { message } = this.props.value.app;
     confirmMessage();
+    if (message == '报名成功') {
+      this.props.push('/task/list');
+    }
   }
 
   renderMyInfo() {
@@ -115,6 +119,7 @@ class Enroll extends Component {
            style={{width:180}}
            onTouchTap={this.handleSubmit}
            primary={true}
+           disabled={classList[this.state.clazzIndex].remain <= 0}
            fullWidth={true} />
          </div>
          </div>
@@ -175,7 +180,8 @@ Enroll.propTypes = {
 const mapStateToProps = state => ({ value: state });
 
 const mapDispatchToProps = dispatch => (
-  { actions: bindActionCreators(IndexActions, dispatch) }
+  { actions: bindActionCreators(IndexActions, dispatch),
+  push: bindActionCreators(push, dispatch) }
 );
 
 export default connect(mapStateToProps, mapDispatchToProps)(Enroll);

@@ -142,6 +142,31 @@ export function bind(data) {
   }
 }
 
+// 报名
+export function enroll(clazzId) {
+  return async (dispatch, getState) => {
+    if (getState().app.isFetching) {
+      return;
+    }
+
+    let openId = Cookies.get('openid');
+    if (__DEVELOPMENT__) {
+      openId = 'oUoJLv6jTegVkkRhXBnhq5XSvvBQ';
+    }
+    dispatch(fetchRequest());
+    try {
+      let response = await fetch(`/webservice/student/student_enroll?openId=${openId}&clazzId=${clazzId}`);
+      let json = await response.json();
+      if (json.errno != 0) {
+        return dispatch(sendMessage(json.errmsg));
+      }
+      dispatch(sendMessage('报名成功'));
+    } catch (e) {
+      return dispatch(sendMessage('服务异常'));
+    }
+  }
+}
+
 export function wxConfig() {
   return async (dispatch, getState) => {
     try {
