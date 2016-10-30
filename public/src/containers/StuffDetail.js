@@ -40,13 +40,13 @@ class StuffDetail extends Component {
           <Divider />
           {stuff.stuff_attach.map((e, index) => {
             if (e.attach_type == 'audio/mp3') {
-              return <audio src={e.attach_url} />;
+              return <audio src={e.attach_url} controls/>;
             }
           })}
           <List>
             { stuff.stuff_attach.map((e, index) => {
               if (e.attach_type == 'audio/mp3') {
-                return <audio src={e.attach_url} />;
+                return <audio src={e.attach_url} controls/>;
               } else {
                 return <a key={index} href={e.attach_url} ><ListItem key={index} primaryText={e.attach_name}
                   leftIcon={e.attach_type == 'audio/mp3'? <IconAudio />: <IconPDF />}
