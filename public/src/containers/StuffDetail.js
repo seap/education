@@ -38,11 +38,17 @@ class StuffDetail extends Component {
             subtitle={dateFormat(new Date(parseInt(stuff.create_date) * 1000), 'yyyy-MM-dd')}
           />
           <Divider />
+        
           <List>
-            { stuff.stuff_attach.map((e, index) =>
-              <a key={index} href={e.attach_url} ><ListItem key={index} primaryText={e.attach_name}
-                leftIcon={e.attach_type == 'audio/mp3'? <IconAudio />: <IconPDF />}
-              /></a> )}
+            { stuff.stuff_attach.map((e, index) => {
+              if (e.attach_type == 'audio/mp3') {
+                return <audio src={e.attach_url} />;
+              } else {
+                return <a key={index} href={e.attach_url} ><ListItem key={index} primaryText={e.attach_name}
+                  leftIcon={e.attach_type == 'audio/mp3'? <IconAudio />: <IconPDF />}
+                /></a>;
+              }
+            })}
           </List>
         </Card>
       );
