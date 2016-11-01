@@ -42,10 +42,11 @@ class StuffDetail extends Component {
           <List>
             { stuff.stuff_attach.map((e, index) => {
               if (e.attach_type == 'audio/mp3') {
-                return <ListItem key={index} leftIcon={<IconAudio />}> <audio src={e.attach_url} controls/></ListItem>
+                return <div><ListItem key={index} primaryText={e.attach_name} leftIcon={<IconAudio />} />
+                  <audio src={e.attach_url} controls="controls"/></div>
               } else {
                 return <a key={index} href={e.attach_url} ><ListItem key={index} primaryText={e.attach_name}
-                  leftIcon={e.attach_type == 'audio/mp3'? <IconAudio />: <IconPDF />}
+                  leftIcon={<IconPDF />}
                 /></a>;
               }
             })}
