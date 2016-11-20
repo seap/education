@@ -172,11 +172,11 @@ export function wxConfig() {
     try {
       await fetch(`/wechat/token`);
       let response = null;
-      if (__DEVELOPMENT__) {
+      // if (__DEVELOPMENT__) {
         response = await fetch(`/wechat/signature?url=${encodeURIComponent(window.location.href)}`);
-      } else {
-        response = await fetch(`/wechat/signature?url=${encodeURIComponent('http://w.jenniferstudio.cn/task/list')}`);
-      }
+      // } else {
+      //   response = await fetch(`/wechat/signature?url=${encodeURIComponent('http://w.jenniferstudio.cn/task/list')}`);
+      // }
       let json = await response.json();
       wx.config({
         debug: __DEVELOPMENT__, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。

@@ -99,7 +99,7 @@ class TaskList extends Component {
       let completedTasks = this.currentClass.tasks.filter((task)=>task.status === 'compl');
       if (completedTasks.length > 0) {
         return completedTasks.map((task, index) =>
-          <Link key={index} to={`/task/detail/${task.task_id}`}>
+          <a key={index} href={`/task/detail/${task.task_id}`}>
           <ListItem
             key={index}
             leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={grey500} />}
@@ -107,7 +107,7 @@ class TaskList extends Component {
             primaryText={task.task_name}
             secondaryText={dateFormat(new Date(parseInt(task.create_date)*1000), 'yyyy-MM-dd')}
           />
-          </Link>
+          </a>
         )
       } else {
         return (
@@ -125,7 +125,7 @@ class TaskList extends Component {
       let currentTasks = this.currentClass.tasks.filter((task)=>task.status == 'nocom');
       if (currentTasks.length > 0) {
         return currentTasks.map((task, index) =>
-          <Link key={index} to={`/task/detail/${task.task_id}`}>
+          <a key={index} href={`/task/detail/${task.task_id}`}>
           <ListItem
             key={index}
             leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={task.status === 'nocom' ? blue500 : yellow500} />}
@@ -133,7 +133,7 @@ class TaskList extends Component {
             primaryText={task.task_name}
             secondaryText={dateFormat(new Date(parseInt(task.create_date)*1000), 'yyyy-MM-dd')}
           />
-          </Link>
+          </a>
         )
       } else {
         return (
@@ -151,7 +151,7 @@ class TaskList extends Component {
       let currentTasks = this.currentClass.tasks.filter((task)=>task.status == 'corre');
       if (currentTasks.length > 0) {
         return currentTasks.map((task, index) =>
-          <Link key={index} to={`/task/detail/${task.task_id}`}>
+          <a key={index} href={`/task/detail/${task.task_id}`}>
           <ListItem
             key={index}
             leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={task.status === 'nocom' ? blue500 : yellow500} />}
@@ -159,7 +159,7 @@ class TaskList extends Component {
             primaryText={task.task_name}
             secondaryText={dateFormat(new Date(parseInt(task.create_date)*1000), 'yyyy-MM-dd')}
           />
-          </Link>
+          </a>
         )
       } else {
         return (
