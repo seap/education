@@ -37,11 +37,14 @@ class NoticeDetail extends Component {
           <CardText>
             <div dangerouslySetInnerHTML={{__html: notice.context}} />
           </CardText>
-          <List>
-            <a href={notice.attach_url} ><ListItem primaryText={"通知附件"}
-              leftIcon={notice.attach_type == 'audio/mp3'? <IconAudio />: <IconPDF />}
-            /></a>
-          </List>
+          {notice.attach_url ?
+            <List>
+              <a href={notice.attach_url} ><ListItem primaryText={"通知附件"}
+                leftIcon={notice.attach_type == 'audio/mp3'? <IconAudio />: <IconPDF />}
+              /></a>
+            </List> : null
+          }
+
         </Card>
       );
     }
