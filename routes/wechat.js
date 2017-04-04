@@ -137,7 +137,7 @@ router.get('/token', async (req, res) => {
 let cachedTicket = null;
 //获取ticket
 router.get('/ticket', async (req, res) => {
-  let timestamp = new Date().getTime() / 1000;
+  let timestamp = createTimeStamp();
   if (cachedTicket) {
     if (timestamp < cachedTicket.timestamp + cachedTicket.expires_in - 300) {
       return res.json(cachedTicket);
