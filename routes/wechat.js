@@ -146,7 +146,7 @@ router.get('/ticket', async (req, res) => {
   try {
     let response = await fetch(`https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${cachedToken.access_token}&type=jsapi`);
     let json = await response.json();
-    json.timestamp = timestamp;
+    json.timestamp = cachedToken.timestamp;
     cachedTicket = json;
     res.json(json);
   } catch (e) {
@@ -164,7 +164,7 @@ router.get('/signature', async (req, res) => {
     try {
       let response = await fetch(`https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${cachedToken.access_token}&type=jsapi`);
       let json = await response.json();
-      json.timestamp = timestamp;
+      json.timestamp = cachedToken.timestamp;
       cachedTicket = json;
     } catch (e) {
       console.log(e);
