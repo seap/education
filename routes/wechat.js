@@ -153,7 +153,10 @@ const getTicket = async () => {
   }
   try {
     const token = await getToken()
-    const response = await fetch(`https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${token}&type=jsapi`);
+    if (!token || !token.access_token) {
+      return null
+    }
+    const response = await fetch(`https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${token.access_token}&type=jsapi`);
     let json = await response.json();
     json.timestamp = timestamp;
     cachedTicket = json;
