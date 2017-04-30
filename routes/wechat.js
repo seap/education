@@ -384,8 +384,9 @@ router.get('/postmessage', async (req, res) => {
       }
     }
   };
+  const token = await getToken()
 
-  let response = await fetch(`https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=${cachedToken.access_token}`, {
+  let response = await fetch(`https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=${token}`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
