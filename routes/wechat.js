@@ -114,74 +114,84 @@ router.get('/validate', (req, res) => {
 });
 
 let cachedToken = null;
-//获取access_token
-router.get('/token', async (req, res) => {
-  let timestamp = createTimeStamp();
+const getToken = async () => {
+  const timestamp = createTimeStamp();
   if (cachedToken) {
-    if (timestamp < cachedToken.timestamp + cachedToken.expires_in - 300) {
-      return res.json(cachedToken);
+    if (timestamp < (cachedToken.timestamp + cachedToken.expires_in - 1000)) {
+      return cachedToken;
     }
   }
   try {
     let response = await fetch(`https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${config.appId}&secret=${config.appSecret}`);
-    let json = await response.json();
+    const json = await response.json();
     json.timestamp = timestamp;
     cachedToken = json;
-    res.json(json);
+    return cachedToken;
   } catch (e) {
-    console.log(e);
+    console.log('get token error : ', e)
+    return null
+  }
+}
+
+//获取access_token
+router.get('/token', async (req, res) => {
+  const token = await getToken()
+  if (token) {
+    res.json(token);
+  } else {
     res.json('false');
   }
-});
+})
 
 let cachedTicket = null;
-//获取ticket
-router.get('/ticket', async (req, res) => {
-  let timestamp = createTimeStamp();
+const getTicket = async () => {
+  const timestamp = createTimeStamp();
   if (cachedTicket) {
-    if (timestamp < cachedTicket.timestamp + cachedTicket.expires_in - 300) {
-      return res.json(cachedTicket);
+    if (timestamp < (cachedTicket.timestamp + cachedTicket.expires_in - 1000)) {
+      return cachedTicket;
     }
   }
   try {
-    let response = await fetch(`https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${cachedToken.access_token}&type=jsapi`);
+    const token = await getToken()
+    const response = await fetch(`https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${token}&type=jsapi`);
     let json = await response.json();
-    json.timestamp = cachedToken.timestamp;
+    json.timestamp = timestamp;
     cachedTicket = json;
-    res.json(json);
+    return cachedTicket;
   } catch (e) {
-    console.log(e);
+    console.log('get ticket error : ', e)
+    return null;
+  }
+}
+//获取ticket
+router.get('/ticket', async (req, res) => {
+  const ticket = await getTicket()
+  if (ticket) {
+    res.json(ticket);
+  } else {
     res.json('false');
   }
 });
 
-let cachedSignatures = {};
+// const cachedSignatures = {};
 //获取signature
 router.get('/signature', async (req, res) => {
-  const timestamp = createTimeStamp();
-  //如果ticket失效
-  if (!cachedTicket || timestamp > cachedTicket.timestamp + cachedTicket.expires_in - 300 ) {
-    try {
-      let response = await fetch(`https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${cachedToken.access_token}&type=jsapi`);
-      let json = await response.json();
-      json.timestamp = cachedToken.timestamp;
-      cachedTicket = json;
-    } catch (e) {
-      console.log(e);
-      return res.json('false');
-    }
+  // 如果ticket失效
+  const ticket = await getTicket()
+  if (!ticket) {
+    res.json('false');
   }
 
   const url = req.query.url || config.baseUrl; // || req.originalUrl;
-  let signatureObj = cachedSignatures[url];
-  if (signatureObj && (signatureObj.ticket == cachedTicket.ticket)) {
-    return res.json(signatureObj);
-  }
+  // let signatureObj = cachedSignatures[url];
+  // if (signatureObj && (signatureObj.ticket == cachedTicket.ticket)) {
+  //   return res.json(signatureObj);
+  // }
   //重新生成签名
-  signatureObj = createSignature(url, cachedTicket);
+  const signatureObj = createSignature(url, cachedTicket);
   // console.log('url:', url);
   // console.log(signatureObj);
-  cachedSignatures[url] = signatureObj;
+  // cachedSignatures[url] = signatureObj;
   res.json(signatureObj);
 });
 
