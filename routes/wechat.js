@@ -188,7 +188,7 @@ router.get('/signature', async (req, res) => {
   //   return res.json(signatureObj);
   // }
   //重新生成签名
-  const signatureObj = createSignature(url, cachedTicket);
+  const signatureObj = createSignature(url, ticket);
   // console.log('url:', url);
   // console.log(signatureObj);
   // cachedSignatures[url] = signatureObj;
