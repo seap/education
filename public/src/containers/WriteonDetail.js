@@ -38,9 +38,7 @@ class WriteonDetail extends Component {
             subtitle={dateFormat(new Date(parseInt(writeon.create_date) * 1000), 'yyyy-MM-dd')}
           />
           <Divider />
-          <p>
-            {writeon.content}
-          </p>
+          <div dangerouslySetInnerHTML={{ __html: writeon.content }} />
           <GridList cellHeight={200} >
             {writeon.writeon_attach.map((tile, index) => (
               <a href={tile.attach_url} target="_blank">
