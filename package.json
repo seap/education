@@ -56,7 +56,7 @@
     "build:dev": {
       "command": "webpack --verbose --colors --progress --display-error-details --config webpack/build",
       "env": {
-        "NODE_ENV": "development",
+        "NODE_ENV": "production",
         "HOST": "w.jenniferstudio.cn",
         "PORT": "3000",
         "PUBLIC_PATH": "dist"
