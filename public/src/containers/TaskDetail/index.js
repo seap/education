@@ -142,7 +142,7 @@ class TaskDetail extends Component {
           />
           <Divider />
           <CardText>
-            {currentTask.task_content}
+            <div dangerouslySetInnerHTML={{ __html: currentTask.task_content }} />
           </CardText>
           <Divider />
 
