@@ -406,7 +406,9 @@ export function fetchAllMyTasks() {
     }
     dispatch(fetchRequest());
     try {
-      let response = await fetch(`/webservice/student/clazz?openId=${openId}`);
+      let response = await fetch(
+        `/webservice/student/query_student_clazz?openId=${openId}`
+      );
       let json = await response.json();
       if (json.errno == 14) {
         //未绑定登录
@@ -727,7 +729,9 @@ export function fetchNoticeList() {
     }
     dispatch(fetchRequest());
     try {
-      let response = await fetch(`/webservice/student/_clazz?openId=${openId}`);
+      let response = await fetch(
+        `/webservice/student/query_student_clazz?openId=${openId}`
+      );
       let json = await response.json();
       if (json.errno == 14) {
         //未绑定登录
