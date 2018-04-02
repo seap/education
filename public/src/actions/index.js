@@ -14,7 +14,7 @@ function redirectPassport() {
 export function resetState() {
   return {
     type: ActionTypes.ACTION_STATE_RESET
-  }
+  };
 }
 
 // 发送消息
@@ -30,28 +30,28 @@ export function sendMessage(message) {
 export function confirmMessage() {
   return {
     type: ActionTypes.ACTION_MESSAGE_CONFIRMATION
-  }
+  };
 }
 
 // 数据请求
 export function fetchRequest() {
   return {
     type: ActionTypes.ACTION_FETCH_REQUEST
-  }
+  };
 }
 
 // 数据请求结束
 export function fetchComplete() {
   return {
     type: ActionTypes.ACTION_FETCH_COMPLETE
-  }
+  };
 }
 
 // 绑定成功
 export function bindSuccess() {
   return {
     type: ActionTypes.ACTION_BINDING_SUCCESS
-  }
+  };
 }
 
 // 注册成功
@@ -59,7 +59,7 @@ export function registerSuccess(student) {
   return {
     type: ActionTypes.ACTION_REGISTER_SUCCESS,
     payload: student
-  }
+  };
 }
 
 // 注册
@@ -94,7 +94,11 @@ export function register(data) {
     }
     dispatch(fetchRequest());
     try {
-      let response = await fetch(`/webservice/account/register?studentName=${data.studentName}&parentName=${data.parentName}&phone=${data.phone}&password=${data.password}&openId=${openid}&nickname=${nickname}`);
+      let response = await fetch(
+        `/webservice/account/register?studentName=${data.studentName}&parentName=${data.parentName}&phone=${
+          data.phone
+        }&password=${data.password}&openId=${openid}&nickname=${nickname}`
+      );
       let json = await response.json();
       if (json.errno != 0) {
         return dispatch(sendMessage(json.errmsg));
@@ -105,7 +109,7 @@ export function register(data) {
     } catch (e) {
       return dispatch(sendMessage('服务异常'));
     }
-  }
+  };
 }
 
 // 学号密码绑定
@@ -128,7 +132,11 @@ export function bind(data) {
     const nickname = Cookies.get('nickname');
     dispatch(fetchRequest());
     try {
-      let response = await fetch(`/webservice/account/bind?studentNo=${data.studentId}&password=${data.password}&remark=${data.remark}&openId=${openid}&nickname=${nickname}`);
+      let response = await fetch(
+        `/webservice/account/bind?studentNo=${data.studentId}&password=${data.password}&remark=${
+          data.remark
+        }&openId=${openid}&nickname=${nickname}`
+      );
       let json = await response.json();
       if (json.errno != 0) {
         return dispatch(sendMessage(json.errmsg));
@@ -139,7 +147,7 @@ export function bind(data) {
     } catch (e) {
       return dispatch(sendMessage('服务异常'));
     }
-  }
+  };
 }
 
 // 报名
@@ -164,7 +172,7 @@ export function enroll(clazzId) {
     } catch (e) {
       return dispatch(sendMessage('服务异常'));
     }
-  }
+  };
 }
 
 export function wxConfig() {
@@ -173,7 +181,7 @@ export function wxConfig() {
       await fetch(`/wechat/token`);
       let response = null;
       // if (__DEVELOPMENT__) {
-        response = await fetch(`/wechat/signature?url=${encodeURIComponent(window.location.href)}`);
+      response = await fetch(`/wechat/signature?url=${encodeURIComponent(window.location.href)}`);
       // } else {
       //   response = await fetch(`/wechat/signature?url=${encodeURIComponent('http://w.jenniferstudio.cn/task/list')}`);
       // }
@@ -181,19 +189,28 @@ export function wxConfig() {
       wx.config({
         debug: __DEVELOPMENT__, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
         appId: 'wx959feca69d5ba361', // 必填，公众号的唯一标识
-        timestamp: json.timestamp , // 必填，生成签名的时间戳
+        timestamp: json.timestamp, // 必填，生成签名的时间戳
         nonceStr: json.noncestr, // 必填，生成签名的随机串
-        signature: json.signature,// 必填，签名，见附录1
-        jsApiList: ['startRecord', 'stopRecord', 'onVoiceRecordEnd', 'playVoice', 'pauseVoice', 'stopVoice', 'onVoicePlayEnd', 'uploadVoice', 'downloadVoice'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+        signature: json.signature, // 必填，签名，见附录1
+        jsApiList: [
+          'startRecord',
+          'stopRecord',
+          'onVoiceRecordEnd',
+          'playVoice',
+          'pauseVoice',
+          'stopVoice',
+          'onVoicePlayEnd',
+          'uploadVoice',
+          'downloadVoice'
+        ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
       });
-      wx.ready(function(){
+      wx.ready(function() {
         console.log('wx config ready.');
       });
-
     } catch (e) {
       console.log(e);
     }
-  }
+  };
 }
 
 function addLocalRecord(record) {
@@ -201,7 +218,7 @@ function addLocalRecord(record) {
   return {
     type: ActionTypes.ACTION_TASK_RECORD_STOP,
     record
-  }
+  };
 }
 // 开始录音
 export function startRecord() {
@@ -212,7 +229,7 @@ export function startRecord() {
     wx && wx.startRecord();
     wx.onVoiceRecordEnd({
       // 录音时间超过一分钟没有停止的时候会执行 complete 回调
-      complete: function (res) {
+      complete: function(res) {
         dispatch(addLocalRecord(res));
       }
     });
@@ -225,20 +242,21 @@ export function startRecord() {
 // 停止录音
 export function stopRecord() {
   return (dispatch, getState) => {
-    wx && wx.stopRecord({
-      success: function (res) {
-        // console.log('stop successed, res', res);
-        dispatch(addLocalRecord(res));
-        // wx.playVoice(res);
-      }
-    });
-  }
+    wx &&
+      wx.stopRecord({
+        success: function(res) {
+          // console.log('stop successed, res', res);
+          dispatch(addLocalRecord(res));
+          // wx.playVoice(res);
+        }
+      });
+  };
 }
 
 export function playRecord(record) {
   return (dispatch, getState) => {
     wx && wx.playVoice(record);
-  }
+  };
 }
 
 export function deleteRecord(record) {
@@ -247,7 +265,7 @@ export function deleteRecord(record) {
       type: ActionTypes.ACTION_TASK_RECORD_DELETE,
       record
     });
-  }
+  };
 }
 
 export function deleteRemoteRecord(record) {
@@ -256,7 +274,7 @@ export function deleteRemoteRecord(record) {
       type: ActionTypes.ACTION_TASK_REMOTE_RECORD_DELETE,
       record
     });
-  }
+  };
 }
 
 // function uploadVoicePromise(record) {
@@ -286,12 +304,12 @@ function syncUploadVoice(records, callback) {
   wx.uploadVoice({
     localId: record.localId, // 需要上传的音频的本地ID，由stopRecord接口获得
     isShowProgressTips: 1, // 默认为1，显示进度提示
-    success: function (res) {
+    success: function(res) {
       // var serverId = res.serverId; // 返回音频的服务器端ID
       record.serverId = res.serverId;
       res.name = record.name;
       remoteRecords.push(res);
-      if (records.length > 0){
+      if (records.length > 0) {
         syncUploadVoice(records, callback);
       } else {
         callback();
@@ -341,18 +359,17 @@ export function saveTask(submitting) {
             type: ActionTypes.ACTION_TASK_RECORD_SAVE,
             payload: json.data
           });
-          return dispatch(sendMessage(submitting == 1 ? '提交成功! ':'保存成功!'));
+          return dispatch(sendMessage(submitting == 1 ? '提交成功! ' : '保存成功!'));
         } catch (e) {
           dispatch(sendMessage('网络服务异常！'));
         }
       });
     }
-  }
+  };
 }
 
 //提交当前作业
-export function submitTask() {
-}
+export function submitTask() {}
 
 function allMyTaskLoaded(tasks) {
   return {
@@ -377,7 +394,7 @@ export function fetchAllMyTasks() {
     }
     dispatch(fetchRequest());
     try {
-      let response = await fetch(`/webservice/student/query_clazz?openId=${openId}`);
+      let response = await fetch(`/webservice/student/query_student__clazz?openId=${openId}`);
       let json = await response.json();
       if (json.errno == 14) {
         //未绑定登录
@@ -393,15 +410,14 @@ export function fetchAllMyTasks() {
         response = await fetch(`/webservice/student/query_task?openId=${openId}&clazzId=${myClasses[i].clazz_id}`);
         json = await response.json();
         if (json.errno === 0) {
-          myClasses[i].tasks = json.data
+          myClasses[i].tasks = json.data;
         }
       }
       dispatch(allMyTaskLoaded(myClasses));
     } catch (e) {
       return dispatch(sendMessage('服务异常，请稍后再试！'));
     }
-
-  }
+  };
 }
 
 function taskDetailLoaded(task) {
@@ -436,7 +452,7 @@ export function fetchTaskDetail(params) {
     } catch (e) {
       dispatch(sendMessage('网络服务异常！'));
     }
-  }
+  };
 }
 
 //查询个人信息
@@ -468,9 +484,8 @@ export function fetchMyInfo() {
     } catch (e) {
       dispatch(sendMessage('网络服务异常！'));
     }
-  }
+  };
 }
-
 
 //查询已激活班级
 export function fetchClassList() {
@@ -501,7 +516,7 @@ export function fetchClassList() {
     } catch (e) {
       dispatch(sendMessage('网络服务异常！'));
     }
-  }
+  };
 }
 
 //查询板书列表
@@ -520,7 +535,7 @@ export function fetchWriteonList() {
     }
     dispatch(fetchRequest());
     try {
-      let response = await fetch(`/webservice/student/query_clazz?openId=${openId}`);
+      let response = await fetch(`/webservice/student/query_student__clazz?openId=${openId}`);
       let json = await response.json();
       if (json.errno == 14) {
         //未绑定登录
@@ -535,15 +550,14 @@ export function fetchWriteonList() {
         response = await fetch(`/webservice/student/query_writeon?openId=${openId}&clazzId=${myClasses[i].clazz_id}`);
         json = await response.json();
         if (json.errno === 0) {
-          myClasses[i].writeons = json.data
+          myClasses[i].writeons = json.data;
         }
       }
       dispatch(allMyTaskLoaded(myClasses));
     } catch (e) {
       dispatch(sendMessage('网络服务异常！'));
     }
-
-  }
+  };
 }
 
 //查询板书详情
@@ -562,7 +576,9 @@ export function fetchWriteonDetail(params) {
     }
     dispatch(fetchRequest());
     try {
-      let response = await fetch(`/webservice/student/query_writeon_info?openId=${openId}&writeonId=${params.writeonId}`);
+      let response = await fetch(
+        `/webservice/student/query_writeon_info?openId=${openId}&writeonId=${params.writeonId}`
+      );
       let json = await response.json();
       if (json.errno !== 0 && json.data) {
         return dispatch(sendMessage(json.errmsg));
@@ -574,7 +590,7 @@ export function fetchWriteonDetail(params) {
     } catch (e) {
       dispatch(sendMessage('网络服务异常！'));
     }
-  }
+  };
 }
 
 //查询板书列表
@@ -593,7 +609,7 @@ export function fetchStuffList() {
     }
     dispatch(fetchRequest());
     try {
-      let response = await fetch(`/webservice/student/query_clazz?openId=${openId}`);
+      let response = await fetch(`/webservice/student/query_student__clazz?openId=${openId}`);
       let json = await response.json();
       if (json.errno == 14) {
         //未绑定登录
@@ -608,7 +624,7 @@ export function fetchStuffList() {
         response = await fetch(`/webservice/student/query_stuff?openId=${openId}&clazzId=${myClasses[i].clazz_id}`);
         json = await response.json();
         if (json.errno === 0) {
-          myClasses[i].stuffs = json.data
+          myClasses[i].stuffs = json.data;
         } else {
           return dispatch(sendMessage(json.errmsg));
         }
@@ -617,8 +633,7 @@ export function fetchStuffList() {
     } catch (e) {
       dispatch(sendMessage('网络服务异常！'));
     }
-
-  }
+  };
 }
 
 //查询材料详情
@@ -649,9 +664,8 @@ export function fetchStuffDetail(params) {
     } catch (e) {
       dispatch(sendMessage('网络服务异常！'));
     }
-  }
+  };
 }
-
 
 //查询通知列表
 export function fetchNoticeList() {
@@ -669,7 +683,7 @@ export function fetchNoticeList() {
     }
     dispatch(fetchRequest());
     try {
-      let response = await fetch(`/webservice/student/query_clazz?openId=${openId}`);
+      let response = await fetch(`/webservice/student/query_student__clazz?openId=${openId}`);
       let json = await response.json();
       if (json.errno == 14) {
         //未绑定登录
@@ -681,10 +695,12 @@ export function fetchNoticeList() {
 
       let myClasses = json.data;
       for (let i = 0; i < myClasses.length; i++) {
-        response = await fetch(`/webservice/clazz/query_clazz_notice?openId=${openId}&clazzId=${myClasses[i].clazz_id}`);
+        response = await fetch(
+          `/webservice/clazz/query_clazz_notice?openId=${openId}&clazzId=${myClasses[i].clazz_id}`
+        );
         json = await response.json();
         if (json.errno === 0) {
-          myClasses[i].notices = json.data
+          myClasses[i].notices = json.data;
         } else {
           return dispatch(sendMessage(json.errmsg));
         }
@@ -693,7 +709,7 @@ export function fetchNoticeList() {
     } catch (e) {
       dispatch(sendMessage('网络服务异常！'));
     }
-  }
+  };
 }
 
 //查询通知列表
@@ -724,7 +740,7 @@ export function fetchNoticeDetail(noticeId) {
     } catch (e) {
       dispatch(sendMessage('网络服务异常！'));
     }
-  }
+  };
 }
 
 //微信支付
@@ -748,33 +764,31 @@ export function wxPayment(classId) {
       let response = await fetch(`/wechat/pay/request/${openId}/${classId}`);
       let json = await response.json();
 
-      function onBridgeReady(){
-        WeixinJSBridge.invoke('getBrandWCPayRequest', json,
-          function(res){
-            if (res.err_msg === 'get_brand_wcpay_request:ok') {
-              dispatch(sendMessage('支付成功！'));
-            } else if(res.err_msg === 'get_brand_wcpay_request:cancel') {
-              dispatch(sendMessage('支付过程中用户取消！'));
-            } else {
-              dispatch(sendMessage(res.err_msg));
-            }
+      function onBridgeReady() {
+        WeixinJSBridge.invoke('getBrandWCPayRequest', json, function(res) {
+          if (res.err_msg === 'get_brand_wcpay_request:ok') {
+            dispatch(sendMessage('支付成功！'));
+          } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
+            dispatch(sendMessage('支付过程中用户取消！'));
+          } else {
+            dispatch(sendMessage(res.err_msg));
           }
-        );
+        });
       }
-      if (typeof WeixinJSBridge == "undefined"){
-         if ( document.addEventListener ){
-             document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
-         } else if (document.attachEvent){
-             document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
-             document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
-         }
-      } else{
-         onBridgeReady();
+      if (typeof WeixinJSBridge == 'undefined') {
+        if (document.addEventListener) {
+          document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+        } else if (document.attachEvent) {
+          document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+          document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+        }
+      } else {
+        onBridgeReady();
       }
     } catch (e) {
       dispatch(sendMessage('网络服务异常！'));
     }
-  }
+  };
 }
 
 export function modifyPassword(obj) {
@@ -797,18 +811,19 @@ export function modifyPassword(obj) {
         //未绑定登录
         return redirectPassport();
       }
-      let response = await fetch(`/webservice/student/update_password?openId=${openId}&newpwd=${obj.newPassword}&oldpwd=${obj.oldPassword}`);
+      let response = await fetch(
+        `/webservice/student/update_password?openId=${openId}&newpwd=${obj.newPassword}&oldpwd=${obj.oldPassword}`
+      );
       let json = await response.json();
       if (json.errno === 0) {
         return dispatch(sendMessage('修改成功！'));
       } else {
         return dispatch(sendMessage(json.errmsg));
       }
-
     } catch (e) {
       dispatch(sendMessage('网络服务异常！'));
     }
-  }
+  };
 }
 
 export function modifyPhone(phone) {
@@ -838,9 +853,8 @@ export function modifyPhone(phone) {
       } else {
         return dispatch(sendMessage(json.errmsg));
       }
-
     } catch (e) {
       dispatch(sendMessage('网络服务异常！'));
     }
-  }
+  };
 }
