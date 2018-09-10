@@ -4,10 +4,6 @@ import Helmet from 'react-helmet';
 import '../common/css/main.css';
 
 class App extends Component {
-  // script = {[
-  //   {'src': 'http://st.haiziwang.com/static/tracker/tracker-201605.js'},
-  //   {'src': 'http://st.haiziwang.com/vendor/wechatShare-1.0.js'}
-  // ]}
   render() {
     const { children } = this.props;
     return (
